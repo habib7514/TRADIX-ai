@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Coldrix AI - Premium Gold Trading</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --card-bg: #141414;
+            --card-border: #2a2a2a;
+            --gold: #d4af37;
+            --gold-light: #f4d03f;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --btn-gold-bg: linear-gradient(135deg, #d4af37, #f4d03f);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding-bottom: 70px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            padding: 16px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--gold);
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        .header h1::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            right: 0;
+            width: 40px;
+            height: 3px;
+            background-color: var(--gold);
+            border-radius: 2px;
+        }
+
+        .bell-icon {
+            background-color: #1a1a1a;
+            border: 1px solid #333;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--gold);
+        }
+
+        /* Welcome */
+        .welcome-section {
+            margin-bottom: 24px;
+        }
+
+        .welcome-section p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .welcome-section h2 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        /* Cards */
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .balance-card {
+            background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
+            border: 1px solid #333;
+        }
+
+        .balance-card .label {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .balance-card .amount {
+            font-size: 36px;
+            font-weight: 900;
+            color: var(--gold-light);
+            margin-bottom: 20px;
+        }
+
+        .balance-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 15px;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            transition: 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--btn-gold-bg);
+            color: #000;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #444;
+            color: #fff;
+        }
+
+        /* Markets */
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .markets-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .market-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 16px;
+        }
+
+        .market-card .name {
+            color: var(--text-muted);
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+
+        .market-card .symbol {
+            font-size: 20px;
+            font-weight: 900;
+            margin-bottom: 4px;
+        }
+
+        .market-card .status {
+            color: var(--gold);
+            font-size: 12px;
+        }
+
+        /* VIP Dashboard */
+        .vip-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .vip-item {
+            background-color: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .vip-item .label {
+            color: var(--text-muted);
+            font-size: 11px;
+            margin-bottom: 4px;
+        }
+
+        .vip-item .value {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--gold-light);
+        }
+
+        .vip-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .vip-header-row h3 {
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--gold);
+        }
+
+        .badge {
+            background-color: #222;
+            border: 1px solid #444;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .badge.active {
+            color: var(--gold);
+            border-color: var(--gold);
+        }
+
+        /* AI Analysis Box */
+        .analysis-box {
+            background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
+            border: 1px solid #333;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .analysis-box h3 {
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--gold-light);
+            margin-bottom: 12px;
+        }
+
+        .analysis-box p {
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .btn-full {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 15px;
+            text-align: center;
+            cursor: pointer;
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+        }
+
+        /* Plans */
+        .plan-card {
+            border: 1px solid #333;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        .plan-card.premium {
+            border-color: var(--gold);
+        }
+
+        .plan-card h4 {
+            font-size: 16px;
+            color: var(--gold);
+            margin-bottom: 8px;
+        }
+
+        .plan-card .price {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--gold-light);
+            margin-bottom: 4px;
+        }
+
+        .plan-card .duration {
+            color: var(--text-muted);
+            font-size: 12px;
+            margin-bottom: 16px;
+        }
+
+        .plan-badge {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background: var(--gold);
+            color: #000;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        /* Steps */
+        .step-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            background: #1a1a1a;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid #2a2a2a;
+        }
+
+        .step-num {
+            background: var(--gold);
+            color: #000;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .step-content h5 {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .step-content p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Trade Box */
+        .trade-box {
+            text-align: center;
+            padding: 30px 16px;
+            border: 1px solid #333;
+            border-radius: 16px;
+            margin-bottom: 16px;
+        }
+
+        .trade-box .live-badge {
+            background: #222;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            display: inline-block;
+            margin-bottom: 16px;
+        }
+
+        .trade-box h3 {
+            color: var(--gold-light);
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .trade-box p {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        /* Contact */
+        .contact-box {
+            background: #1a1a1a;
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid #333;
+            margin-bottom: 16px;
+        }
+
+        .contact-box h3 {
+            color: var(--gold-light);
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .contact-box p {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .contact-box input {
+            width: 100%;
+            background: #0d0d0d;
+            border: 1px solid #333;
+            padding: 14px;
+            border-radius: 12px;
+            color: var(--gold);
+            font-size: 14px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #0d0d0d;
+            border-top: 1px solid #222;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-muted);
+            font-size: 10px;
+            text-decoration: none;
+            width: 20%;
+        }
+
+        .nav-item.active {
+            color: var(--gold);
+        }
+
+        .nav-item .icon {
+            font-size: 20px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>COLDRIX AI</h1>
+            <div class="bell-icon">🔔</div>
+        </div>
+
+        <!-- Welcome -->
+        <div class="welcome-section">
+            <p>Welcome back</p>
+            <h2>Coldrix AI Member</h2>
+        </div>
+
+        <!-- Total Balance -->
+        <div class="card balance-card">
+            <div class="label">Total Balance</div>
+            <div class="amount">$100.00</div>
+            <div class="balance-actions">
+                <button class="btn btn-primary">Deposit</button>
+                <button class="btn btn-outline">Withdraw</button>
+            </div>
+        </div>
+
+        <!-- Markets -->
+        <div class="section-title">Markets</div>
+        <div class="markets-grid">
+            <div class="market-card">
+                <div class="name">Bitcoin</div>
+                <div class="symbol">BTC</div>
+                <div class="status">Live Market</div>
+            </div>
+            <div class="market-card">
+                <div class="name">Ethereum</div>
+                <div class="symbol">ETH</div>
+                <div class="status">Live Market</div>
+            </div>
+            <div class="market-card">
+                <div class="name">BNB</div>
+                <div class="symbol">BNB</div>
+                <div class="status">Live Market</div>
+            </div>
+            <div class="market-card">
+                <div class="name">Gold</div>
+                <div class="symbol">XAU</div>
+                <div class="status">Market</div>
+            </div>
+        </div>
+
+        <!-- VIP Dashboard -->
+        <div class="card" style="border-color: #333;">
+            <div class="vip-header-row">
+                <h3>VIP DASHBOARD</h3>
+                <span class="badge">INACTIVE</span>
+            </div>
+            <div class="vip-grid">
+                <div class="vip-item">
+                    <div class="label">PLAN</div>
+                    <div class="value">NO ACTIVE PLAN</div>
+                </div>
+                <div class="vip-item">
+                    <div class="label">STATUS</div>
+                    <div class="value">INACTIVE</div>
+                </div>
+                <div class="vip-item">
+                    <div class="label">EXPIRES</div>
+                    <div class="value">-</div>
+                </div>
+                <div class="vip-item">
+                    <div class="label">ACCESS</div>
+                    <div class="value">LIMITED</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Gold Analysis -->
+        <div class="analysis-box">
+            <div class="vip-header-row" style="margin-bottom: 8px;">
+                <h3 style="margin-bottom:0;">AI GOLD ANALYSIS</h3>
+                <span class="badge active">COLDRIX AI</span>
+            </div>
+            <p>Review the latest published XAU/USD signal and its market reasoning. New trade ideas are published by the Coldrix AI signal system after review.</p>
+            <button class="btn-full">VIEW AI GOLD ANALYSIS</button>
+        </div>
+
+        <!-- VIP Access -->
+        <div class="section-title" style="color: var(--gold);">VIP ACCESS</div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
+            <span style="color: var(--text-muted); font-size: 13px;">Choose your VIP subscription and continue directly to the deposit page.</span>
+            <span class="badge active" style="font-size:10px;">PREMIUM</span>
+        </div>
+
+        <div class="plan-card">
+            <h4>VIP MONTHLY</h4>
+            <div class="price">$49</div>
+            <div class="duration">1 MONTH ACCESS</div>
+            <button class="btn btn-primary" style="width:100%;">GET VIP</button>
+        </div>
+
+        <div class="plan-card premium">
+            <span class="plan-badge">VIP</span>
+            <h4>VIP QUARTERLY</h4>
+            <div class="price">$119</div>
+            <div class="duration">3 MONTHS ACCESS</div>
+            <button class="btn btn-primary" style="width:100%;">GET VIP</button>
+        </div>
+
+        <!-- How Coldrix AI Works -->
+        <div class="section-title" style="color: var(--gold-light); margin-top: 24px;">HOW COLDRIX AI WORKS</div>
+        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 16px;">A simple subscription process for accessing premium gold signals.</p>
+
+        <div class="step-item">
+            <div class="step-num">1</div>
+            <div class="step-content">
+                <h5>Choose VIP</h5>
+                <p>Select the 1 month or 3 months subscription.</p>
+            </div>
+        </div>
+        <div class="step-item">
+            <div class="step-num">2</div>
+            <div class="step-content">
+                <h5>Make Deposit</h5>
+                <p>Send your payment through BNB Smart Chain (BEP20).</p>
+            </div>
+        </div>
+        <div class="step-item">
+            <div class="step-num">3</div>
+            <div class="step-content">
+                <h5>Verification</h5>
+                <p>Submit your transaction hash and wait for payment verification.</p>
+            </div>
+        </div>
+        <div class="step-item">
+            <div class="step-num">4</div>
+            <div class="step-content">
+                <h5>Receive Gold Signals</h5>
+                <p>After activation, access the premium gold signals.</p>
+            </div>
+        </div>
+
+        <!-- Current Trade -->
+        <div class="trade-box">
+            <div class="live-badge">LIVE</div>
+            <h3>Current Trade</h3>
+            <p>NO TRADE CURRENTLY<br>Premium access required.</p>
+        </div>
+
+        <!-- Contact Admin -->
+        <div class="contact-box">
+            <h3>CONTACT ADMIN</h3>
+            <p>Need help with your account, VIP subscription or deposit? Contact Coldrix AI support directly.</p>
+            <input type="text" value="mmatrix081@gmail.com" readonly>
+            <button class="btn btn-primary" style="width:100%;">CONTACT ADMIN / SUPPORT</button>
+        </div>
+
+        <div class="card" style="text-align:center; border-color: #333;">
+            <h3 style="color: var(--gold); margin-bottom: 8px;">COLDRIX AI</h3>
+            <p style="color: var(--text-muted); font-size: 13px; line-height: 1.6;">Coldrix AI provides gold market signals for informational and trading purposes. Always review a signal and manage your own risk before placing a trade.</p>
+            <br>
+            <h3 style="color: var(--gold); margin-bottom: 8px;">PREMIUM ACCESS</h3>
+            <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 16px;">View all available subscription options.</p>
+            <button class="btn-full">VIEW SUBSCRIPTION PLANS</button>
+        </div>
+
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="#" class="nav-item active">
+            <span class="icon">🏠</span>
+            <span>Home</span>
+        </a>
+        <a href="#" class="nav-item">
+            <span class="icon">💎</span>
+            <span>Plans</span>
+        </a>
+        <a href="#" class="nav-item">
+            <span class="icon">👛</span>
+            <span>Wallet</span>
+        </a>
+        <a href="#" class="nav-item">
+            <span class="icon">📊</span>
+            <span>History</span>
+        </a>
+        <a href="#" class="nav-item">
+            <span class="icon">⚙️</span>
+            <span>Settings</span>
+        </a>
+    </div>
+
+</body>
+</html>
