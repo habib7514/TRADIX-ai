@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Coldrix AI - Premium Gold Trading</title>
+    <title>AURIX AI - Premium Gold Trading</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <!-- ========== CSS ========== -->
     <style>
         :root {
             --bg-color: #0a0a0a;
@@ -14,6 +16,8 @@
             --gold-light: #f4d03f;
             --text-main: #ffffff;
             --text-muted: #888888;
+            --green: #22c55e;
+            --red: #ef4444;
             --btn-gold-bg: linear-gradient(135deg, #d4af37, #f4d03f);
         }
 
@@ -28,278 +32,341 @@
         body {
             background-color: var(--bg-color);
             color: var(--text-main);
-            display: flex;
-            justify-content: center;
             min-height: 100vh;
-            padding-bottom: 70px;
+            overflow-x: hidden;
         }
 
-        .app-container {
-            width: 100%;
-            max-width: 480px;
-            padding: 16px;
-        }
-
-        /* Header */
-        .header {
+        /* ========== SPLASH SCREEN ========== */
+        #splash {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100vh;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
-            margin-bottom: 24px;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s;
         }
 
-        .header h1 {
-            font-size: 28px;
+        #splash.hide {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .logo-container {
+            width: 140px;
+            height: 140px;
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .logo-circle {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            border-top-color: var(--gold);
+            border-right-color: var(--gold-light);
+            animation: spin 1.5s linear infinite;
+        }
+
+        .logo-inner {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 42px;
             font-weight: 900;
             color: var(--gold);
-            letter-spacing: 1px;
-            position: relative;
+            letter-spacing: 2px;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+            animation: pulse 1.5s ease-in-out infinite;
         }
 
-        .header h1::after {
-            content: '';
-            position: absolute;
-            bottom: -6px;
-            right: 0;
-            width: 40px;
-            height: 3px;
-            background-color: var(--gold);
-            border-radius: 2px;
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
-        .bell-icon {
-            background-color: #1a1a1a;
-            border: 1px solid #333;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.8; }
+        }
+
+        .splash-title {
+            font-size: 32px;
+            font-weight: 900;
             color: var(--gold);
+            letter-spacing: 4px;
+            margin-bottom: 10px;
+            animation: fadeIn 1s ease 0.5s both;
         }
 
-        /* Welcome */
-        .welcome-section {
-            margin-bottom: 24px;
-        }
-
-        .welcome-section p {
-            color: var(--text-muted);
+        .splash-subtitle {
             font-size: 14px;
-            margin-bottom: 4px;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            animation: fadeIn 1s ease 1s both;
         }
 
-        .welcome-section h2 {
-            font-size: 24px;
-            font-weight: 700;
+        .loading-bar {
+            width: 200px;
+            height: 4px;
+            background: #222;
+            border-radius: 4px;
+            overflow: hidden;
+            animation: fadeIn 1s ease 1.5s both;
         }
 
-        /* Cards */
-        .card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
+        .loading-bar-fill {
+            height: 100%;
+            background: var(--btn-gold-bg);
+            border-radius: 4px;
+            animation: load 5s linear forwards;
+        }
+
+        @keyframes load {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ========== SCREENS ========== */
+        .screen {
+            display: none;
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
             padding: 20px;
-            margin-bottom: 16px;
+            min-height: 100vh;
+            padding-bottom: 90px;
         }
 
-        .balance-card {
-            background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
-            border: 1px solid #333;
+        .screen.active {
+            display: block;
         }
 
-        .balance-card .label {
-            color: var(--text-muted);
-            font-size: 14px;
+        /* ========== AUTH SCREENS ========== */
+        .auth-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            max-width: 420px;
+            margin: 0 auto;
+        }
+
+        .auth-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-logo h1 {
+            font-size: 36px;
+            font-weight: 900;
+            color: var(--gold);
+            letter-spacing: 2px;
             margin-bottom: 8px;
         }
 
-        .balance-card .amount {
-            font-size: 36px;
-            font-weight: 900;
-            color: var(--gold-light);
-            margin-bottom: 20px;
+        .auth-logo p {
+            color: var(--text-muted);
+            font-size: 14px;
         }
 
-        .balance-actions {
-            display: flex;
-            gap: 12px;
-        }
-
-        .btn {
-            flex: 1;
-            padding: 12px;
-            border-radius: 12px;
+        .auth-title {
+            font-size: 24px;
             font-weight: 700;
-            font-size: 15px;
-            text-align: center;
-            cursor: pointer;
-            border: none;
-            transition: 0.2s;
-        }
-
-        .btn-primary {
-            background: var(--btn-gold-bg);
-            color: #000;
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid #444;
-            color: #fff;
-        }
-
-        /* Markets */
-        .section-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 12px;
-        }
-
-        .markets-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
             margin-bottom: 24px;
+            text-align: center;
         }
 
-        .market-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 14px;
-            padding: 16px;
-        }
-
-        .market-card .name {
-            color: var(--text-muted);
-            font-size: 12px;
-            margin-bottom: 4px;
-        }
-
-        .market-card .symbol {
-            font-size: 20px;
-            font-weight: 900;
-            margin-bottom: 4px;
-        }
-
-        .market-card .status {
-            color: var(--gold);
-            font-size: 12px;
-        }
-
-        /* VIP Dashboard */
-        .vip-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
+        .input-group {
             margin-bottom: 16px;
         }
 
-        .vip-item {
-            background-color: #1a1a1a;
-            border: 1px solid #2a2a2a;
-            border-radius: 12px;
-            padding: 12px;
-        }
-
-        .vip-item .label {
+        .input-group label {
+            display: block;
+            font-size: 13px;
             color: var(--text-muted);
-            font-size: 11px;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
 
-        .vip-item .value {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--gold-light);
-        }
-
-        .vip-header-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .vip-header-row h3 {
-            font-size: 20px;
-            font-weight: 900;
-            color: var(--gold);
-        }
-
-        .badge {
-            background-color: #222;
-            border: 1px solid #444;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            color: var(--text-muted);
-        }
-
-        .badge.active {
-            color: var(--gold);
-            border-color: var(--gold);
-        }
-
-        /* AI Analysis Box */
-        .analysis-box {
-            background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
+        .input-group input {
+            width: 100%;
+            background: #1a1a1a;
             border: 1px solid #333;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 16px;
+            padding: 14px;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 15px;
+            outline: none;
+            transition: 0.3s;
         }
 
-        .analysis-box h3 {
-            font-size: 20px;
-            font-weight: 900;
-            color: var(--gold-light);
-            margin-bottom: 12px;
+        .input-group input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
         }
 
-        .analysis-box p {
-            color: var(--text-muted);
-            font-size: 14px;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        .btn-full {
+        .btn-block {
             width: 100%;
             padding: 14px;
             border-radius: 12px;
             font-weight: 700;
             font-size: 15px;
-            text-align: center;
             cursor: pointer;
-            background: transparent;
+            border: none;
+            background: var(--btn-gold-bg);
+            color: #000;
+            margin-top: 8px;
+            transition: 0.3s;
+        }
+
+        .btn-block:active {
+            transform: scale(0.98);
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .auth-switch a {
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* ========== HEADER ========== */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-top: 10px;
+        }
+
+        .header h1 {
+            font-size: 26px;
+            font-weight: 900;
+            color: var(--gold);
+            letter-spacing: 1px;
+        }
+
+        .bell-icon {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: var(--gold);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .bell-icon::after {
+            content: '';
+            position: absolute;
+            top: 8px; right: 8px;
+            width: 8px; height: 8px;
+            background: var(--red);
+            border-radius: 50%;
+        }
+
+        /* ========== CARDS ========== */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .status-card {
+            text-align: center;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .status-badge.inactive {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--red);
+            border: 1px solid var(--red);
+        }
+
+        .status-badge.active {
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--green);
+            border: 1px solid var(--green);
+        }
+
+        .status-badge.pending {
+            background: rgba(212, 175, 55, 0.15);
+            color: var(--gold);
             border: 1px solid var(--gold);
+        }
+
+        .status-card h2 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .status-card p {
+            color: var(--text-muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        /* ========== VIP PLANS ========== */
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
             color: var(--gold);
         }
 
-        /* Plans */
         .plan-card {
             border: 1px solid #333;
             border-radius: 16px;
-            padding: 16px;
+            padding: 18px;
             margin-bottom: 12px;
             position: relative;
+            background: var(--card-bg);
         }
 
         .plan-card.premium {
             border-color: var(--gold);
+            background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
         }
 
         .plan-card h4 {
-            font-size: 16px;
+            font-size: 15px;
             color: var(--gold);
             margin-bottom: 8px;
         }
 
         .plan-card .price {
-            font-size: 28px;
+            font-size: 30px;
             font-weight: 900;
             color: var(--gold-light);
             margin-bottom: 4px;
@@ -313,123 +380,137 @@
 
         .plan-badge {
             position: absolute;
-            top: 16px;
-            left: 16px;
+            top: 18px;
+            left: 18px;
             background: var(--gold);
             color: #000;
             font-size: 10px;
             font-weight: 700;
-            padding: 2px 8px;
+            padding: 3px 10px;
             border-radius: 10px;
         }
 
-        /* Steps */
-        .step-item {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 16px;
-            background: #1a1a1a;
-            padding: 12px;
+        /* ========== DEPOSIT ========== */
+        .wallet-box {
+            background: #0d0d0d;
+            border: 1px dashed var(--gold);
             border-radius: 12px;
-            border: 1px solid #2a2a2a;
+            padding: 16px;
+            margin-bottom: 16px;
+            word-break: break-all;
+            text-align: center;
+            font-size: 13px;
+            color: var(--gold);
         }
 
-        .step-num {
-            background: var(--gold);
-            color: #000;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
+        .info-row {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 12px;
-            flex-shrink: 0;
-        }
-
-        .step-content h5 {
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #222;
             font-size: 14px;
-            margin-bottom: 4px;
         }
 
-        .step-content p {
-            font-size: 12px;
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-row span:first-child {
             color: var(--text-muted);
         }
 
-        /* Trade Box */
-        .trade-box {
-            text-align: center;
-            padding: 30px 16px;
-            border: 1px solid #333;
+        .info-row span:last-child {
+            color: var(--gold-light);
+            font-weight: 700;
+        }
+
+        /* ========== SIGNALS ========== */
+        .signal-box {
+            background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
+            border: 1px solid var(--gold);
             border-radius: 16px;
+            padding: 20px;
             margin-bottom: 16px;
         }
 
-        .trade-box .live-badge {
-            background: #222;
-            border: 1px solid var(--gold);
+        .signal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .signal-header h3 {
+            font-size: 18px;
             color: var(--gold);
+        }
+
+        .live-badge {
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--green);
+            border: 1px solid var(--green);
             padding: 4px 12px;
             border-radius: 20px;
             font-size: 11px;
-            display: inline-block;
-            margin-bottom: 16px;
+            font-weight: 700;
         }
 
-        .trade-box h3 {
-            color: var(--gold-light);
-            font-size: 18px;
-            margin-bottom: 8px;
+        .signal-data {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 12px;
         }
 
-        .trade-box p {
-            color: var(--text-muted);
-            font-size: 13px;
-        }
-
-        /* Contact */
-        .contact-box {
-            background: #1a1a1a;
-            border-radius: 16px;
-            padding: 20px;
-            border: 1px solid #333;
-            margin-bottom: 16px;
-        }
-
-        .contact-box h3 {
-            color: var(--gold-light);
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-
-        .contact-box p {
-            color: var(--text-muted);
-            font-size: 13px;
-            margin-bottom: 16px;
-            line-height: 1.5;
-        }
-
-        .contact-box input {
-            width: 100%;
-            background: #0d0d0d;
-            border: 1px solid #333;
-            padding: 14px;
-            border-radius: 12px;
-            color: var(--gold);
-            font-size: 14px;
-            margin-bottom: 12px;
+        .signal-item {
+            background: #0a0a0a;
+            border: 1px solid #222;
+            border-radius: 10px;
+            padding: 12px;
             text-align: center;
         }
 
-        /* Bottom Navigation */
+        .signal-item .label {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .signal-item .value {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--gold-light);
+        }
+
+        .locked-box {
+            text-align: center;
+            padding: 40px 20px;
+            border: 1px solid #333;
+            border-radius: 16px;
+            background: var(--card-bg);
+        }
+
+        .locked-box .lock-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .locked-box h3 {
+            color: var(--gold);
+            margin-bottom: 8px;
+        }
+
+        .locked-box p {
+            color: var(--text-muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        /* ========== BOTTOM NAV ========== */
         .bottom-nav {
             position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: #0d0d0d;
+            bottom: 0; left: 0; right: 0;
+            background: #0d0d0d;
             border-top: 1px solid #222;
             display: flex;
             justify-content: space-around;
@@ -445,7 +526,11 @@
             color: var(--text-muted);
             font-size: 10px;
             text-decoration: none;
-            width: 20%;
+            width: 25%;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: inherit;
         }
 
         .nav-item.active {
@@ -456,198 +541,612 @@
             font-size: 20px;
         }
 
+        /* ========== MISC ========== */
+        .hidden { display: none !important; }
+
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--gold);
+            color: #000;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 14px;
+            opacity: 0;
+            transition: 0.3s;
+            z-index: 9999;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <!-- Header -->
-        <div class="header">
-            <h1>COLDRIX AI</h1>
-            <div class="bell-icon">🔔</div>
+<!-- ================= SPLASH SCREEN ================= -->
+<div id="splash">
+    <div class="logo-container">
+        <div class="logo-circle"></div>
+        <div class="logo-inner">AX</div>
+    </div>
+    <h1 class="splash-title">AURIX AI</h1>
+    <p class="splash-subtitle">Premium Gold Trading Signals</p>
+    <div class="loading-bar">
+        <div class="loading-bar-fill"></div>
+    </div>
+</div>
+
+<!-- ================= SIGN UP SCREEN ================= -->
+<div id="signupScreen" class="screen">
+    <div class="auth-container">
+        <div class="auth-logo">
+            <h1>AURIX AI</h1>
+            <p>Premium Gold Trading</p>
+        </div>
+        <h2 class="auth-title">Create Account</h2>
+        
+        <div class="input-group">
+            <label>Full Name</label>
+            <input type="text" id="signupName" placeholder="Enter your full name">
+        </div>
+        <div class="input-group">
+            <label>Email</label>
+            <input type="email" id="signupEmail" placeholder="your@email.com">
+        </div>
+        <div class="input-group">
+            <label>Password</label>
+            <input type="password" id="signupPassword" placeholder="••••••••">
+        </div>
+        <div class="input-group">
+            <label>Confirm Password</label>
+            <input type="password" id="signupConfirm" placeholder="••••••••">
         </div>
 
-        <!-- Welcome -->
-        <div class="welcome-section">
-            <p>Welcome back</p>
-            <h2>Coldrix AI Member</h2>
+        <button class="btn-block" onclick="handleSignup()">Create Account</button>
+
+        <div class="auth-switch">
+            Already have an account? <a onclick="showScreen('loginScreen')">Login</a>
+        </div>
+    </div>
+</div>
+
+<!-- ================= LOGIN SCREEN ================= -->
+<div id="loginScreen" class="screen">
+    <div class="auth-container">
+        <div class="auth-logo">
+            <h1>AURIX AI</h1>
+            <p>Welcome Back</p>
+        </div>
+        <h2 class="auth-title">Login</h2>
+        
+        <div class="input-group">
+            <label>Email</label>
+            <input type="email" id="loginEmail" placeholder="your@email.com">
+        </div>
+        <div class="input-group">
+            <label>Password</label>
+            <input type="password" id="loginPassword" placeholder="••••••••">
         </div>
 
-        <!-- Total Balance -->
-        <div class="card balance-card">
-            <div class="label">Total Balance</div>
-            <div class="amount">$100.00</div>
-            <div class="balance-actions">
-                <button class="btn btn-primary">Deposit</button>
-                <button class="btn btn-outline">Withdraw</button>
-            </div>
-        </div>
+        <button class="btn-block" onclick="handleLogin()">Login</button>
 
-        <!-- Markets -->
-        <div class="section-title">Markets</div>
-        <div class="markets-grid">
-            <div class="market-card">
-                <div class="name">Bitcoin</div>
-                <div class="symbol">BTC</div>
-                <div class="status">Live Market</div>
-            </div>
-            <div class="market-card">
-                <div class="name">Ethereum</div>
-                <div class="symbol">ETH</div>
-                <div class="status">Live Market</div>
-            </div>
-            <div class="market-card">
-                <div class="name">BNB</div>
-                <div class="symbol">BNB</div>
-                <div class="status">Live Market</div>
-            </div>
-            <div class="market-card">
-                <div class="name">Gold</div>
-                <div class="symbol">XAU</div>
-                <div class="status">Market</div>
-            </div>
+        <div class="auth-switch">
+            Don't have an account? <a onclick="showScreen('signupScreen')">Sign Up</a>
         </div>
+    </div>
+</div>
 
-        <!-- VIP Dashboard -->
-        <div class="card" style="border-color: #333;">
-            <div class="vip-header-row">
-                <h3>VIP DASHBOARD</h3>
-                <span class="badge">INACTIVE</span>
-            </div>
-            <div class="vip-grid">
-                <div class="vip-item">
-                    <div class="label">PLAN</div>
-                    <div class="value">NO ACTIVE PLAN</div>
-                </div>
-                <div class="vip-item">
-                    <div class="label">STATUS</div>
-                    <div class="value">INACTIVE</div>
-                </div>
-                <div class="vip-item">
-                    <div class="label">EXPIRES</div>
-                    <div class="value">-</div>
-                </div>
-                <div class="vip-item">
-                    <div class="label">ACCESS</div>
-                    <div class="value">LIMITED</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- AI Gold Analysis -->
-        <div class="analysis-box">
-            <div class="vip-header-row" style="margin-bottom: 8px;">
-                <h3 style="margin-bottom:0;">AI GOLD ANALYSIS</h3>
-                <span class="badge active">COLDRIX AI</span>
-            </div>
-            <p>Review the latest published XAU/USD signal and its market reasoning. New trade ideas are published by the Coldrix AI signal system after review.</p>
-            <button class="btn-full">VIEW AI GOLD ANALYSIS</button>
-        </div>
-
-        <!-- VIP Access -->
-        <div class="section-title" style="color: var(--gold);">VIP ACCESS</div>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
-            <span style="color: var(--text-muted); font-size: 13px;">Choose your VIP subscription and continue directly to the deposit page.</span>
-            <span class="badge active" style="font-size:10px;">PREMIUM</span>
-        </div>
-
-        <div class="plan-card">
-            <h4>VIP MONTHLY</h4>
-            <div class="price">$49</div>
-            <div class="duration">1 MONTH ACCESS</div>
-            <button class="btn btn-primary" style="width:100%;">GET VIP</button>
-        </div>
-
-        <div class="plan-card premium">
-            <span class="plan-badge">VIP</span>
-            <h4>VIP QUARTERLY</h4>
-            <div class="price">$119</div>
-            <div class="duration">3 MONTHS ACCESS</div>
-            <button class="btn btn-primary" style="width:100%;">GET VIP</button>
-        </div>
-
-        <!-- How Coldrix AI Works -->
-        <div class="section-title" style="color: var(--gold-light); margin-top: 24px;">HOW COLDRIX AI WORKS</div>
-        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 16px;">A simple subscription process for accessing premium gold signals.</p>
-
-        <div class="step-item">
-            <div class="step-num">1</div>
-            <div class="step-content">
-                <h5>Choose VIP</h5>
-                <p>Select the 1 month or 3 months subscription.</p>
-            </div>
-        </div>
-        <div class="step-item">
-            <div class="step-num">2</div>
-            <div class="step-content">
-                <h5>Make Deposit</h5>
-                <p>Send your payment through BNB Smart Chain (BEP20).</p>
-            </div>
-        </div>
-        <div class="step-item">
-            <div class="step-num">3</div>
-            <div class="step-content">
-                <h5>Verification</h5>
-                <p>Submit your transaction hash and wait for payment verification.</p>
-            </div>
-        </div>
-        <div class="step-item">
-            <div class="step-num">4</div>
-            <div class="step-content">
-                <h5>Receive Gold Signals</h5>
-                <p>After activation, access the premium gold signals.</p>
-            </div>
-        </div>
-
-        <!-- Current Trade -->
-        <div class="trade-box">
-            <div class="live-badge">LIVE</div>
-            <h3>Current Trade</h3>
-            <p>NO TRADE CURRENTLY<br>Premium access required.</p>
-        </div>
-
-        <!-- Contact Admin -->
-        <div class="contact-box">
-            <h3>CONTACT ADMIN</h3>
-            <p>Need help with your account, VIP subscription or deposit? Contact Coldrix AI support directly.</p>
-            <input type="text" value="mmatrix081@gmail.com" readonly>
-            <button class="btn btn-primary" style="width:100%;">CONTACT ADMIN / SUPPORT</button>
-        </div>
-
-        <div class="card" style="text-align:center; border-color: #333;">
-            <h3 style="color: var(--gold); margin-bottom: 8px;">COLDRIX AI</h3>
-            <p style="color: var(--text-muted); font-size: 13px; line-height: 1.6;">Coldrix AI provides gold market signals for informational and trading purposes. Always review a signal and manage your own risk before placing a trade.</p>
-            <br>
-            <h3 style="color: var(--gold); margin-bottom: 8px;">PREMIUM ACCESS</h3>
-            <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 16px;">View all available subscription options.</p>
-            <button class="btn-full">VIEW SUBSCRIPTION PLANS</button>
-        </div>
-
+<!-- ================= HOME SCREEN ================= -->
+<div id="homeScreen" class="screen">
+    <div class="header">
+        <h1>AURIX AI</h1>
+        <div class="bell-icon">🔔</div>
     </div>
 
-    <!-- Bottom Navigation -->
+    <div class="welcome-section" style="margin-bottom: 20px;">
+        <p style="color: var(--text-muted); font-size: 14px;">Welcome back</p>
+        <h2 id="userNameDisplay" style="font-size: 22px; font-weight: 700;">Member</h2>
+    </div>
+
+    <!-- Status Card -->
+    <div class="card status-card">
+        <div id="statusBadge" class="status-badge inactive">INACTIVE</div>
+        <h2 id="statusTitle">No Active Subscription</h2>
+        <p id="statusDesc">Subscribe to a VIP plan to start receiving premium gold signals.</p>
+    </div>
+
+    <!-- VIP Plans -->
+    <div class="section-title">VIP PLANS</div>
+    
+    <div class="plan-card">
+        <h4>VIP MONTHLY</h4>
+        <div class="price">$49</div>
+        <div class="duration">1 MONTH ACCESS</div>
+        <button class="btn-block" onclick="goToDeposit(49, 'Monthly')">GET VIP</button>
+    </div>
+
+    <div class="plan-card premium">
+        <span class="plan-badge">BEST</span>
+        <h4>VIP QUARTERLY</h4>
+        <div class="price">$119</div>
+        <div class="duration">3 MONTHS ACCESS</div>
+        <button class="btn-block" onclick="goToDeposit(119, 'Quarterly')">GET VIP</button>
+    </div>
+
+    <!-- Bottom Nav -->
     <div class="bottom-nav">
-        <a href="#" class="nav-item active">
+        <button class="nav-item active" onclick="showScreen('homeScreen')">
             <span class="icon">🏠</span>
             <span>Home</span>
-        </a>
-        <a href="#" class="nav-item">
-            <span class="icon">💎</span>
-            <span>Plans</span>
-        </a>
-        <a href="#" class="nav-item">
-            <span class="icon">👛</span>
-            <span>Wallet</span>
-        </a>
-        <a href="#" class="nav-item">
+        </button>
+        <button class="nav-item" onclick="showScreen('signalsScreen')">
             <span class="icon">📊</span>
-            <span>History</span>
-        </a>
-        <a href="#" class="nav-item">
-            <span class="icon">⚙️</span>
-            <span>Settings</span>
+            <span>Signals</span>
+        </button>
+        <button class="nav-item" onclick="showScreen('vipScreen')">
+            <span class="icon">💎</span>
+            <span>VIP</span>
+        </button>
+        <button class="nav-item" onclick="showScreen('accountScreen')">
+            <span class="icon">👤</span>
+            <span>Account</span>
+        </button>
+    </div>
+</div>
+
+<!-- ================= DEPOSIT SCREEN ================= -->
+<div id="depositScreen" class="screen">
+    <div class="header">
+        <h1>Deposit</h1>
+        <div class="bell-icon" onclick="showScreen('homeScreen')">✕</div>
+    </div>
+
+    <div class="card">
+        <h3 style="color: var(--gold); margin-bottom: 12px;">Payment Details</h3>
+        
+        <div class="info-row">
+            <span>Plan</span>
+            <span id="depositPlan">-</span>
+        </div>
+        <div class="info-row">
+            <span>Amount</span>
+            <span id="depositAmount">$0</span>
+        </div>
+        <div class="info-row">
+            <span>Network</span>
+            <span>BNB Smart Chain</span>
+        </div>
+        <div class="info-row">
+            <span>Currency</span>
+            <span>USDT (BEP20)</span>
+        </div>
+    </div>
+
+    <div class="section-title">WALLET ADDRESS</div>
+    <div class="wallet-box" id="walletAddress">
+        0x4E11E978119cAAB300b5439B909D06341C24a2A7
+    </div>
+    <button class="btn-block" onclick="copyWallet()">📋 Copy Address</button>
+
+    <div style="margin-top: 20px;">
+        <div class="section-title">TRANSACTION HASH</div>
+        <div class="input-group">
+            <input type="text" id="txHash" placeholder="Paste your transaction hash here">
+        </div>
+        <button class="btn-block" onclick="submitDeposit()">Submit for Review</button>
+    </div>
+
+    <div class="bottom-nav">
+        <button class="nav-item active" onclick="showScreen('homeScreen')">
+            <span class="icon">🏠</span>
+            <span>Home</span>
+        </button>
+        <button class="nav-item" onclick="showScreen('signalsScreen')">
+            <span class="icon">📊</span>
+            <span>Signals</span>
+        </button>
+        <button class="nav-item" onclick="showScreen('vipScreen')">
+            <span class="icon">💎</span>
+            <span>VIP</span>
+        </button>
+        <button class="nav-item" onclick="showScreen('accountScreen')">
+            <span class="icon">👤</span>
+            <span>Account</span>
+        </button>
+    </div>
+</div>
+
+<!-- ================= SIGNALS SCREEN ================= -->
+<div id="signalsScreen" class="screen">
+    <div class="header">
+        <h1>Signals</h1>
+        <div class="bell-icon">🔔</div>
+    </div>
+
+    <!-- Active Signal -->
+    <div id="activeSignalBox" class="signal-box hidden">
+        <div class="signal-header">
+            <h3>XAU/USD Signal</h3>
+            <span class="live-badge">● LIVE</span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 12px;">
+            Gold Spot / US Dollar
+        </p>
+        <div class="signal-data">
+            <div class="signal-item">
+                <div class="label">ENTRY</div>
+                <div class="value" id="sigEntry">-</div>
+            </div>
+            <div class="signal-item">
+                <div class="label">STOP LOSS</div>
+                <div class="value" id="sigSL">-</div>
+            </div>
+            <div class="signal-item">
+                <div class="label">TAKE PROFIT</div>
+                <div class="value" id="sigTP">-</div>
+            </div>
+            <div class="signal-item">
+                <div class="label">STATUS</div>
+                <div class="value" style="color: var(--green);">ACTIVE</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Locked Box -->
+    <div id="lockedSignalBox" class="locked-box">
+        <div class="lock-icon">🔒</div>
+        <h3>Premium Access Required</h3>
+        <p>Subscribe to a VIP plan to receive premium gold signals with Entry, Stop Loss, and Take Profit levels.</p>
+        <button class="btn-block" style="margin-top: 16px;" onclick="showScreen('homeScreen')">View VIP Plans</button>
+    </div>
+
+    <div class="bottom-nav">
+        <button class="nav-item" onclick="showScreen('homeScreen')">
+            <span class="icon">🏠</span>
+            <span>Home</span>
+        </button>
+        <button class="nav-item active" onclick="showScreen('signalsScreen')">
+            <span class="icon">📊</span>
+            <span>Signals</span>
+        </button>
+        <button class="nav-item" onclick="showScreen('vipScreen')">
+            <span class="icon">💎</span>
+            <span>VIP</span>
+        </button>
+        <button class="nav-item" onclick="showScreen('accountScreen')">
+            <span class="icon">👤</span>
+            <span>Account</span>
+        </button>
+    </div>
+</div>
+
+<!-- ================= VIP SCREEN ================= -->
+<div id="vipScreen" class="screen">
+    <div class="header">
+        <h1>VIP Access</h1>
+        <div class="bell-icon">🔔</div>
+    </div>
+
+    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px; line-height: 1.6;">
+        Choose your VIP subscription and continue directly to the deposit page.
+    </p>
+
+    <div class="plan-card">
+        <h4>VIP MONTHLY</h4>
+        <div class="price">$49</div>
+        <div class="duration">1 MONTH ACCESS</div>
+        <button class="btn-block" onclick="goToDeposit(49, 'Monthly')">GET VIP</button>
+    </div>
+
+    <div class="plan-card premium">
+        <span class="plan-badge">BEST</span>
+        <h4>VIP QUARTERLY</h4>
+        <div class="price">$119</div>
+        <div class="duration">3 MONTHS ACCESS</div>
+        <button class="btn-block" onclick="goToDeposit(119, 'Quarterly')">GET VIP</button>
+    </div>
+
+    <div class="bottom-nav">
+        <button class="nav-item" onclick="showScreen('homeScreen')">
+            <span class="icon">🏠</span>
+            <span>Home</span>
+        </button>
+        <button class="nav-item" onclick="showScreen('signalsScreen')">
+            <span class="icon">📊</span>
+            <span>Signals</span>
+        </button>
+        <button class="nav-item active" onclick="showScreen('vipScreen')">
+            <span class="icon">💎</span>
+            <span>VIP</span>
+        </button>
+        <button class="nav-item" onclick="showScreen('accountScreen')">
+            <span class="icon">👤</span>
+            <span>Account</span>
+        </button>
+    </div>
+</div>
+
+<!-- ================= ACCOUNT SCREEN ================= -->
+<div id="accountScreen" class="screen">
+    <div class="header">
+        <h1>Account</h1>
+        <div class="bell-icon">🔔</div>
+    </div>
+
+    <div class="card">
+        <h3 style="color: var(--gold); margin-bottom: 12px;">Profile</h3>
+        <div class="info-row">
+            <span>Name</span>
+            <span id="accName">-</span>
+        </div>
+        <div class="info-row">
+            <span>Email</span>
+            <span id="accEmail">-</span>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3 style="color: var(--gold); margin-bottom: 12px;">Subscription</h3>
+        <div class="info-row">
+            <span>Plan</span>
+            <span id="accPlan">-</span>
+        </div>
+        <div class="info-row">
+            <span>Status</span>
+            <span id="accStatus">-</span>
+        </div>
+        <div class="info-row">
+            <span>Start Date</span>
+            <span id="accStart">-</span>
+        </div>
+        <div class="info-row">
+            <span>Expiry Date</span>
+            <span id="accExpiry">-</span>
+        </div>
+        <div class="info-row">
+            <span>Days Left</span>
+            <span id="accDays">-</span>
+        </div>
+    </div>
+
+    <div class="card" style="text-align: center;">
+        <h3 style="color: var(--gold); margin-bottom: 8px;">Need Help?</h3>
+        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 16px;">
+            Contact AURIX AI support directly.
+        </p>
+        <a href="mailto:mmatrix081@gmail.com" class="btn-block" style="display: block; text-decoration: none; text-align: center;">
+            ✉️ Contact Admin
         </a>
     </div>
+
+    <button class="btn-block" style="background: transparent; border: 1px solid #444; color: #fff;" onclick="handleLogout()">
+        Logout
+    </button>
+
+    <div class="bottom-nav">
+        <button class="nav-item" onclick="showScreen('homeScreen')">
+            <span class="icon">🏠</span>
+            <span>Home</span>
+        </button>
+        <button class="nav-item" onclick="showScreen('signalsScreen')">
+            <span class="icon">📊</span>
+            <span>Signals</span>
+        </button>
+        <button class="nav-item" onclick="showScreen('vipScreen')">
+            <span class="icon">💎</span>
+            <span>VIP</span>
+        </button>
+        <button class="nav-item active" onclick="showScreen('accountScreen')">
+            <span class="icon">👤</span>
+            <span>Account</span>
+        </button>
+    </div>
+</div>
+
+<!-- ================= TOAST ================= -->
+<div id="toast" class="toast">Message</div>
+
+<!-- ================= JAVASCRIPT ================= -->
+<script>
+    // ===== SPLASH SCREEN =====
+    setTimeout(() => {
+        document.getElementById('splash').classList.add('hide');
+        setTimeout(() => {
+            showScreen('signupScreen');
+        }, 800);
+    }, 5000);
+
+    // ===== SCREEN NAVIGATION =====
+    function showScreen(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        const screen = document.getElementById(id);
+        if (screen) screen.classList.add('active');
+        window.scrollTo(0, 0);
+        updateUI();
+    }
+
+    // ===== SIGN UP =====
+    function handleSignup() {
+        const name = document.getElementById('signupName').value.trim();
+        const email = document.getElementById('signupEmail').value.trim();
+        const pass = document.getElementById('signupPassword').value;
+        const confirm = document.getElementById('signupConfirm').value;
+
+        if (!name || !email || !pass) {
+            showToast('Please fill all fields');
+            return;
+        }
+        if (pass !== confirm) {
+            showToast('Passwords do not match');
+            return;
+        }
+
+        // حفظ مؤقت في المتصفح (سنستبدله بـ Firebase لاحقاً)
+        localStorage.setItem('aurix_user', JSON.stringify({
+            name: name,
+            email: email,
+            status: 'inactive',
+            plan: null,
+            startDate: null,
+            expiryDate: null
+        }));
+
+        showToast('Account created successfully!');
+        setTimeout(() => {
+            showScreen('loginScreen');
+        }, 1500);
+    }
+
+    // ===== LOGIN =====
+    function handleLogin() {
+        const email = document.getElementById('loginEmail').value.trim();
+        const pass = document.getElementById('loginPassword').value;
+
+        if (!email || !pass) {
+            showToast('Please enter email and password');
+            return;
+        }
+
+        const savedUser = JSON.parse(localStorage.getItem('aurix_user') || '{}');
+        
+        if (!savedUser.email) {
+            showToast('No account found. Please sign up first.');
+            return;
+        }
+
+        // تسجيل دخول مؤقت (سنستبدله بـ Firebase لاحقاً)
+        showToast('Welcome back!');
+        setTimeout(() => {
+            showScreen('homeScreen');
+            updateUI();
+        }, 1000);
+    }
+
+    // ===== LOGOUT =====
+    function handleLogout() {
+        localStorage.removeItem('aurix_user');
+        showToast('Logged out');
+        setTimeout(() => {
+            showScreen('loginScreen');
+        }, 1000);
+    }
+
+    // ===== UPDATE UI =====
+    function updateUI() {
+        const user = JSON.parse(localStorage.getItem('aurix_user') || '{}');
+        
+        // Home
+        if (document.getElementById('userNameDisplay')) {
+            document.getElementById('userNameDisplay').textContent = user.name || 'Member';
+        }
+
+        // Status
+        const statusBadge = document.getElementById('statusBadge');
+        const statusTitle = document.getElementById('statusTitle');
+        const statusDesc = document.getElementById('statusDesc');
+
+        if (statusBadge) {
+            if (user.status === 'active') {
+                statusBadge.className = 'status-badge active';
+                statusBadge.textContent = 'ACTIVE';
+                statusTitle.textContent = 'Subscription Active';
+                statusDesc.textContent = 'You have full access to premium gold signals.';
+            } else if (user.status === 'pending') {
+                statusBadge.className = 'status-badge pending';
+                statusBadge.textContent = 'PENDING';
+                statusTitle.textContent = 'Awaiting Confirmation';
+                statusDesc.textContent = 'Your deposit is being reviewed by admin.';
+            } else {
+                statusBadge.className = 'status-badge inactive';
+                statusBadge.textContent = 'INACTIVE';
+                statusTitle.textContent = 'No Active Subscription';
+                statusDesc.textContent = 'Subscribe to a VIP plan to start receiving premium gold signals.';
+            }
+        }
+
+        // Signals
+        const activeSignal = document.getElementById('activeSignalBox');
+        const lockedSignal = document.getElementById('lockedSignalBox');
+        
+        if (activeSignal && lockedSignal) {
+            if (user.status === 'active') {
+                activeSignal.classList.remove('hidden');
+                lockedSignal.classList.add('hidden');
+            } else {
+                activeSignal.classList.add('hidden');
+                lockedSignal.classList.remove('hidden');
+            }
+        }
+
+        // Account
+        if (document.getElementById('accName')) {
+            document.getElementById('accName').textContent = user.name || '-';
+            document.getElementById('accEmail').textContent = user.email || '-';
+            document.getElementById('accPlan').textContent = user.plan || 'No Active Plan';
+            document.getElementById('accStatus').textContent = (user.status || 'inactive').toUpperCase();
+            document.getElementById('accStart').textContent = user.startDate || '-';
+            document.getElementById('accExpiry').textContent = user.expiryDate || '-';
+            document.getElementById('accDays').textContent = user.daysLeft || '-';
+        }
+    }
+
+    // ===== DEPOSIT =====
+    let currentPlan = { price: 0, name: '' };
+
+    function goToDeposit(price, name) {
+        currentPlan = { price, name };
+        document.getElementById('depositPlan').textContent = 'VIP ' + name;
+        document.getElementById('depositAmount').textContent = '$' + price;
+        showScreen('depositScreen');
+    }
+
+    function copyWallet() {
+        const wallet = document.getElementById('walletAddress').textContent.trim();
+        navigator.clipboard.writeText(wallet).then(() => {
+            showToast('✅ Wallet address copied!');
+        }).catch(() => {
+            showToast('Copy failed, please copy manually');
+        });
+    }
+
+    function submitDeposit() {
+        const hash = document.getElementById('txHash').value.trim();
+        if (!hash) {
+            showToast('Please enter transaction hash');
+            return;
+        }
+
+        const user = JSON.parse(localStorage.getItem('aurix_user') || '{}');
+        user.status = 'pending';
+        user.plan = 'VIP ' + currentPlan.name;
+        user.txHash = hash;
+        localStorage.setItem('aurix_user', JSON.stringify(user));
+
+        showToast('✅ Submitted! Awaiting admin confirmation.');
+        setTimeout(() => {
+            showScreen('homeScreen');
+            updateUI();
+        }, 1500);
+    }
+
+    // ===== TOAST =====
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    // ===== INIT =====
+    window.addEventListener('load', () => {
+        updateUI();
+    });
+</script>
 
 </body>
 </html>
