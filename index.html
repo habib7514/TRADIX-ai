@@ -682,7 +682,7 @@
     </style>
 </head>
 <body>
-    
+   
 <!-- ================= SPLASH SCREEN ================= -->
 <div id="splash">
     <div class="logo-container">
@@ -957,7 +957,7 @@
         </button>
     </div>
 </div>
-
+    
 <!-- ================= DEPOSIT SCREEN ================= -->
 <div id="depositScreen" class="screen">
     <div class="header">
@@ -1278,44 +1278,23 @@
 
 <!-- ================= JAVASCRIPT ================= -->
 <script>
-    // ===== إخفاء Netlify Badge (طريقة قوية) =====
+    // ===== إخفاء Netlify Badge =====
     function hideNetlifyBadge() {
-        // إخفاء العناصر المعروفة
         const selectors = [
-            '[data-netlify-badge]',
-            '#netlify-badge',
-            '.netlify-badge',
-            'iframe[title="Netlify"]',
-            'a[href*="netlify.com"]',
-            'div[class*="netlify"]',
-            'div[id*="netlify"]',
-            'a[href*="netlify"]'
+            '[data-netlify-badge]', '#netlify-badge', '.netlify-badge',
+            'iframe[title="Netlify"]', 'a[href*="netlify.com"]',
+            'div[class*="netlify"]', 'div[id*="netlify"]'
         ];
-        
         selectors.forEach(sel => {
             document.querySelectorAll(sel).forEach(el => {
                 el.style.display = 'none';
-                el.style.visibility = 'hidden';
-                el.style.opacity = '0';
-                el.style.pointerEvents = 'none';
                 el.remove();
             });
         });
-        
-        // البحث عن أي عنصر يحتوي على كلمة Netlify
-        document.querySelectorAll('*').forEach(el => {
-            if (el.textContent && el.textContent.trim() === 'Powered by Netlify') {
-                el.style.display = 'none';
-                el.remove();
-            }
-            if (el.tagName === 'A' && el.href && el.href.includes('netlify.com')) {
-                el.style.display = 'none';
-                el.remove();
-            }
+        document.querySelectorAll('a').forEach(el => {
+            if (el.href && el.href.includes('netlify.com')) el.remove();
         });
     }
-    
-    // تشغيل الإخفاء عند التحميل + كل ثانية
     hideNetlifyBadge();
     setInterval(hideNetlifyBadge, 1000);
 
@@ -1353,18 +1332,12 @@
         }
 
         localStorage.setItem('tradix_user', JSON.stringify({
-            name: name,
-            email: email,
-            status: 'inactive',
-            plan: null,
-            startDate: null,
-            expiryDate: null
+            name: name, email: email, status: 'inactive',
+            plan: null, startDate: null, expiryDate: null
         }));
 
         showToast('Account created successfully!');
-        setTimeout(() => {
-            showScreen('loginScreen');
-        }, 1500);
+        setTimeout(() => showScreen('loginScreen'), 1500);
     }
 
     // ===== LOGIN =====
@@ -1378,7 +1351,6 @@
         }
 
         const savedUser = JSON.parse(localStorage.getItem('tradix_user') || '{}');
-        
         if (!savedUser.email) {
             showToast('No account found. Please sign up first.');
             return;
@@ -1395,9 +1367,7 @@
     function handleLogout() {
         localStorage.removeItem('tradix_user');
         showToast('Logged out');
-        setTimeout(() => {
-            showScreen('loginScreen');
-        }, 1000);
+        setTimeout(() => showScreen('loginScreen'), 1000);
     }
 
     // ===== UPDATE UI =====
@@ -1433,7 +1403,6 @@
 
         const activeSignal = document.getElementById('activeSignalBox');
         const lockedSignal = document.getElementById('lockedSignalBox');
-        
         if (activeSignal && lockedSignal) {
             if (user.status === 'active') {
                 activeSignal.classList.remove('hidden');
@@ -1503,64 +1472,48 @@
         }, 1500);
     }
 
-    // ===== LIVE GOLD PRICE (Binance API - موثوق) =====
+    // ===== LIVE GOLD PRICE (السعر الحقيقي) =====
     let lastPrice = 0;
-    let priceUpdateCount = 0;
-    
+
     async function fetchGoldPrice() {
         let price = 0;
-        
-        // المحاولة 1: Binance PAXG/USDT (يعكس سعر الذهب)
+
+        // المصدر 1: gold-api.com (الأدق)
         try {
-            const res1 = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=PAXGUSDT');
+            const res1 = await fetch('https://api.gold-api.com/price/XAU');
             if (res1.ok) {
                 const data1 = await res1.json();
-                if (data1 && data1.lastPrice) {
-                    // PAXG = 1 أونصة ذهب، السعر قريب جداً من الذهب
-                    price = parseFloat(data1.lastPrice);
-                    // تحويل تقريبي لسعر الأونصة
-                    price = price * 1.0;
+                if (data1 && data1.price) {
+                    price = parseFloat(data1.price);
                 }
             }
-        } catch (e) { console.log('Binance failed'); }
-        
-        // المحاولة 2: gold-api.com
-        if (!price) {
+        } catch (e) { console.log('gold-api failed'); }
+
+        // المصدر 2: metals.live
+        if (!price || price <= 0) {
             try {
-                const res2 = await fetch('https://api.gold-api.com/price/XAU');
+                const res2 = await fetch('https://api.metals.live/v1/spot/gold');
                 if (res2.ok) {
                     const data2 = await res2.json();
-                    if (data2 && data2.price) price = parseFloat(data2.price);
-                }
-            } catch (e) { console.log('GoldAPI failed'); }
-        }
-        
-        // المحاولة 3: metals.live
-        if (!price) {
-            try {
-                const res3 = await fetch('https://api.metals.live/v1/spot/gold');
-                if (res3.ok) {
-                    const data3 = await res3.json();
-                    if (Array.isArray(data3) && data3[0] && data3[0][1]) {
-                        price = parseFloat(data3[0][1]);
+                    if (Array.isArray(data2) && data2[0] && data2[0][1]) {
+                        price = parseFloat(data2[0][1]);
                     }
                 }
-            } catch (e) { console.log('Metals failed'); }
+            } catch (e) { console.log('metals.live failed'); }
         }
-        
-        // إذا فشلت كل المحاولات، استخدم قيمة احتياطية متغيرة
-        if (!price || isNaN(price)) {
-            price = 2045.50 + (Math.random() * 20 - 10);
+
+        // سعر احتياطي متغير
+        if (!price || price <= 0 || isNaN(price)) {
+            price = 2648.50 + (Math.random() * 10 - 5);
         }
-        
+
         updateGoldPrice(price);
     }
 
     function updateGoldPrice(price) {
         const priceNum = parseFloat(price);
         if (isNaN(priceNum) || priceNum <= 0) return;
-        
-        // حساب التغيير
+
         let change = 0;
         if (lastPrice > 0) {
             change = ((priceNum - lastPrice) / lastPrice) * 100;
@@ -1568,13 +1521,12 @@
             change = (Math.random() * 0.6) - 0.3;
         }
         lastPrice = priceNum;
-        
-        // تحديث السعر في كل الأماكن
+
         const priceEl = document.getElementById('liveGoldPrice');
         const priceEl2 = document.getElementById('liveGoldPrice2');
         const changeEl = document.getElementById('liveGoldChange');
         const changeEl2 = document.getElementById('liveGoldChange2');
-        
+
         if (priceEl) {
             priceEl.textContent = '$' + priceNum.toFixed(2);
             priceEl.classList.remove('up', 'down');
@@ -1595,22 +1547,6 @@
             changeEl2.classList.remove('up', 'down');
             changeEl2.classList.add(change >= 0 ? 'up' : 'down');
         }
-        
-        // تحريك الشارت
-        animateChart();
-    }
-
-    // ===== ANIMATE CHART =====
-    function animateChart() {
-        const trendLine = document.getElementById('trendLine');
-        const endDot = document.getElementById('endDot');
-        if (trendLine) {
-            trendLine.style.transition = 'all 0.8s ease';
-            trendLine.style.opacity = '0.5';
-            setTimeout(() => {
-                trendLine.style.opacity = '1';
-            }, 400);
-        }
     }
 
     // ===== TOAST =====
@@ -1625,10 +1561,7 @@
     window.addEventListener('load', () => {
         updateUI();
         fetchGoldPrice();
-        // تحديث كل 10 ثواني
         setInterval(fetchGoldPrice, 10000);
-        
-        // إخفاء Netlify Badge بشكل مستمر
         setInterval(hideNetlifyBadge, 500);
     });
 </script>
