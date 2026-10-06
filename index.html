@@ -1482,11 +1482,7 @@
             if (user.status === 'active') {
                 activeSignal.classList.remove('hidden');
                 lockedSignal.classList.add('hidden');
-                if (document.getElementById('sigEntry')) {
-                    document.getElementById('sigEntry').textContent = '2,045.50';
-                    document.getElementById('sigSL').textContent = '2,035.00';
-                    document.getElementById('sigTP').textContent = '2,065.00';
-                }
+               
             } else {
                 activeSignal.classList.add('hidden');
                 lockedSignal.classList.remove('hidden');
