@@ -1721,11 +1721,7 @@
             activeBox.classList.remove('hidden');
             lockedBox.classList.add('hidden');
 
-            if (document.getElementById('sigEntry')) {
-                document.getElementById('sigEntry').textContent = signal.entry || '-';
-                document.getElementById('sigSL').textContent = signal.stopLoss || '-';
-                document.getElementById('sigTP').textContent = signal.takeProfit || '-';
-            }
+            
 
             const sigHeader = activeBox.querySelector('.signal-header h3');
             if (sigHeader) {
