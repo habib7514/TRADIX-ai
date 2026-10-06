@@ -702,6 +702,17 @@
             opacity: 1;
         }
     </style>
+    <style>
+#splash { background: #0a0a0a !important; }
+#splash .logo-container { width: 180px !important; height: 180px !important; margin-bottom: 40px !important; }
+#splash .logo-circle { border: none !important; position: relative !important; animation: none !important; }
+#splash .logo-circle::before { content: ''; position: absolute; inset: 0; border-radius: 50%; border: 3px solid transparent; border-top-color: #d4af37; border-right-color: #d4af37; border-bottom-color: #ef4444; border-left-color: #ef4444; animation: splashSpin 3s linear infinite; transform: rotate(45deg); }
+#splash .logo-inner { font-size: 80px !important; text-shadow: 0 0 30px rgba(212, 175, 55, 0.8), 0 0 60px rgba(212, 175, 55, 0.4) !important; }
+#splash .splash-title { font-size: 38px !important; letter-spacing: 6px !important; }
+#splash .splash-subtitle { color: #ef4444 !important; font-weight: 700 !important; letter-spacing: 4px !important; font-size: 13px !important; }
+#splash .loading-bar { width: 220px !important; }
+@keyframes splashSpin { to { transform: rotate(405deg); } }
+</style>
 </head>
 <body>
     
