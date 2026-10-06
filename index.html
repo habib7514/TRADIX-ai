@@ -1782,12 +1782,7 @@
             });
         } catch(e) { console.log(e); }
     }
-
-    // تشغيل المستمع
-    window.addEventListener('load', () => {
-        setTimeout(initSignalsListener, 2000);
-    });
 </script>
-    <script>async function initSignalsListener(){try{const m=await import("https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js");const{collection,query,orderBy,limit,onSnapshot}=m;const r=collection(window.firebaseDB,'signals');const q=query(r,orderBy('createdAt','desc'),limit(1));onSnapshot(q,s=>{const u=JSON.parse(localStorage.getItem('tradix_user')||'{}');if(u.status!=='active')return;s.docChanges().forEach(c=>{if(c.type==='added'){const d=c.doc.data();if(Notification.permission==='granted'){try{new Notification('🚀 '+d.direction,{body:'Entry: '+d.entry+'\nSL: '+d.stopLoss+'\nTP: '+d.takeProfit,tag:'sig'+c.doc.id,requireInteraction:true});}catch(e){console.error(e);}}if(navigator.vibrate)navigator.vibrate([200,100,200]);}});});}catch(e){console.error(e);}}setTimeout(initSignalsListener,5000);</script>
+    <script>async function initSignalsListener(){try{const m=await import("https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js");const{collection,query,orderBy,limit,onSnapshot}=m;const r=collection(window.firebaseDB,'signals');const q=query(r,orderBy('createdAt','desc'),limit(1));let lastId=null;onSnapshot(q,s=>{const u=JSON.parse(localStorage.getItem('tradix_user')||'{}');if(u.status!=='active')return;if(s.empty||s.docs.length===0){const a=document.getElementById('activeSignalBox');const l=document.getElementById('lockedSignalBox');if(a)a.classList.add('hidden');if(l){l.classList.remove('hidden');const h=l.querySelector('h3');if(h)h.textContent='No Active Signal';}return;}const d=s.docs[0].data();const id=s.docs[0].id;const a=document.getElementById('activeSignalBox');const l=document.getElementById('lockedSignalBox');if(a)a.classList.remove('hidden');if(l)l.classList.add('hidden');document.getElementById('sigEntry').textContent=d.entry||'-';document.getElementById('sigSL').textContent=d.stopLoss||'-';document.getElementById('sigTP').textContent=d.takeProfit||'-';const h2=a.querySelector('.signal-header h3');if(h2)h2.textContent=(d.direction||'SIGNAL')+' - XAU/USD';if(lastId&&lastId!==id&&Notification.permission==='granted'){try{new Notification('🚀 '+d.direction,{body:'Entry: '+d.entry+'\nSL: '+d.stopLoss+'\nTP: '+d.takeProfit,tag:'sig'+id});}catch(e){}}if(navigator.vibrate&&lastId&&lastId!==id)navigator.vibrate([200,100,200]);lastId=id;});}catch(e){console.error(e);}}setTimeout(initSignalsListener,4000);</script>
 </body>
 </html>
