@@ -1791,6 +1791,6 @@
         setTimeout(initSignalsListener, 2000);
     });
 </script>
-    <script>setTimeout(()=>{if(Notification.permission==='default'){Notification.requestPermission()}},5000);</script>
+    <script>async function initSignalsListener(){try{const m=await import("https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js");const{collection,query,orderBy,limit,onSnapshot}=m;const r=collection(window.firebaseDB,'signals');const q=query(r,orderBy('createdAt','desc'),limit(1));onSnapshot(q,s=>{const u=JSON.parse(localStorage.getItem('tradix_user')||'{}');if(u.status!=='active')return;s.docChanges().forEach(c=>{if(c.type==='added'){const d=c.doc.data();const p=Notification.permission;if(p==='default'){Notification.requestPermission();}if(p==='granted'){new Notification('🚀 '+d.direction,{body:'Entry: '+d.entry+'\nSL: '+d.stopLoss+'\nTP: '+d.takeProfit,tag:'sig'+c.doc.id,requireInteraction:true});}if(navigator.vibrate)navigator.vibrate([200,100,200]);}});});}catch(e){console.error(e);}}window.addEventListener('load',()=>setTimeout(initSignalsListener,3000));</script>
 </body>
 </html>
