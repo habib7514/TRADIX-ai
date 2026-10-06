@@ -1648,5 +1648,139 @@
     });
 </script>
 
+<!-- ================= REAL-TIME SIGNALS ================= -->
+<script>
+    // ===== Real-time Signals Listener =====
+    let lastSignalId = null;
+    let signalsInitialized = false;
+
+    async function initSignalsListener() {
+        if (!window.firebaseReady || !window.firebaseDB) {
+            setTimeout(initSignalsListener, 500);
+            return;
+        }
+        if (signalsInitialized) return;
+        signalsInitialized = true;
+
+        try {
+            const fsModule = await import("https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js");
+            const { collection, query, orderBy, limit, onSnapshot, getDocs } = fsModule;
+
+            const signalsRef = collection(window.firebaseDB, 'signals');
+            const q = query(signalsRef, orderBy('createdAt', 'desc'), limit(1));
+
+            // تحميل الصفقة الحالية أولاً
+            const initialSnapshot = await getDocs(q);
+            initialSnapshot.forEach(doc => {
+                const signal = { id: doc.id, ...doc.data() };
+                lastSignalId = signal.id;
+                displayLatestSignal(signal);
+            });
+
+            // الاستماع للتحديثات الفورية
+            onSnapshot(q, (snapshot) => {
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type === 'added' || change.type === 'modified') {
+                        const signal = { id: change.doc.id, ...change.doc.data() };
+                        
+                        // إذا كانت صفقة جديدة
+                        if (lastSignalId && lastSignalId !== signal.id) {
+                            notifyNewSignal(signal);
+                        }
+                        lastSignalId = signal.id;
+                        displayLatestSignal(signal);
+                    }
+                });
+            });
+
+            console.log('✅ Signals listener active');
+        } catch (error) {
+            console.error('Error initializing signals:', error);
+        }
+    }
+
+    function displayLatestSignal(signal) {
+        const user = JSON.parse(localStorage.getItem('tradix_user') || '{}');
+        
+        const activeBox = document.getElementById('activeSignalBox');
+        const lockedBox = document.getElementById('lockedSignalBox');
+
+        if (!activeBox || !lockedBox) return;
+
+        // إذا المستخدم نشط → عرض الصفقة
+        if (user.status === 'active') {
+            activeBox.classList.remove('hidden');
+            lockedBox.classList.add('hidden');
+
+            if (document.getElementById('sigEntry')) {
+                document.getElementById('sigEntry').textContent = signal.entry || '-';
+                document.getElementById('sigSL').textContent = signal.stopLoss || '-';
+                document.getElementById('sigTP').textContent = signal.takeProfit || '-';
+            }
+
+            const sigHeader = activeBox.querySelector('.signal-header h3');
+            if (sigHeader) {
+                sigHeader.textContent = `${signal.direction || 'SIGNAL'} - XAU/USD`;
+            }
+        }
+    }
+
+    async function notifyNewSignal(signal) {
+        const user = JSON.parse(localStorage.getItem('tradix_user') || '{}');
+        if (user.status !== 'active') return;
+
+        // طلب إذن الإشعارات
+        if ('Notification' in window && Notification.permission === 'default') {
+            try { await Notification.requestPermission(); } catch(e) {}
+        }
+
+        const title = `🚀 صفقة جديدة: ${signal.direction}`;
+        const body = `XAU/USD\nEntry: ${signal.entry}\nSL: ${signal.stopLoss}\nTP: ${signal.takeProfit}`;
+
+        // إشعار المتصفح
+        if ('Notification' in window && Notification.permission === 'granted') {
+            try {
+                new Notification(title, {
+                    body: body,
+                    tag: 'signal-' + signal.id,
+                    requireInteraction: true
+                });
+            } catch(e) { console.log(e); }
+        }
+
+        // صوت تنبيه
+        playAlertSound();
+
+        // عرض رسالة داخل التطبيق
+        if (typeof showToast === 'function') {
+            showToast(`🔔 صفقة جديدة: ${signal.direction}`);
+        } else {
+            alert(`🚀 صفقة جديدة!\n\nالاتجاه: ${signal.direction}\nEntry: ${signal.entry}\nSL: ${signal.stopLoss}\nTP: ${signal.takeProfit}`);
+        }
+    }
+
+    function playAlertSound() {
+        try {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            // نغمتان
+            [0, 0.3].forEach(delay => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.frequency.value = 880;
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime + delay);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + delay + 0.2);
+                osc.start(audioCtx.currentTime + delay);
+                osc.stop(audioCtx.currentTime + delay + 0.2);
+            });
+        } catch(e) { console.log(e); }
+    }
+
+    // تشغيل المستمع
+    window.addEventListener('load', () => {
+        setTimeout(initSignalsListener, 2000);
+    });
+</script>
 </body>
 </html>
