@@ -1867,7 +1867,7 @@ async function checkMissedSignals(){
         const m = await import("https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js");
         const {collection, query, orderBy, limit, getDocs} = m;
         
-        const lastCheck = parseInt(localStorage.getItem('lastSignalCheck')||'0');
+        let lastCheck = parseInt(localStorage.getItem('lastSignalCheck')||'0');if(lastCheck===0){lastCheck=Date.now();localStorage.setItem('lastSignalCheck',lastCheck.toString());}
         const r = collection(window.firebaseDB, 'signals');
         const q = query(r, orderBy('createdAt','desc'), limit(20));
         const snap = await getDocs(q);
