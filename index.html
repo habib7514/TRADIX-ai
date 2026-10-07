@@ -1859,6 +1859,7 @@ function closeUserNotifModal(){
 
 // ===== جلب الصفقات الجديدة منذ آخر زيارة =====
 async function checkMissedSignals(){
+    const __uid=JSON.parse(localStorage.getItem('tradix_user')||'{}').uid;const __lastUid=localStorage.getItem('notif_uid');if(__uid&&__lastUid!==__uid){userNotifs=[];localStorage.removeItem('lastSignalCheck');localStorage.setItem('notif_uid',__uid);saveUserNotifs();}
     if(!window.firebaseDB) { setTimeout(checkMissedSignals, 1000); return; }
     
     const u = JSON.parse(localStorage.getItem('tradix_user')||'{}');
