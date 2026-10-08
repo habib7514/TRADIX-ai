@@ -508,7 +508,7 @@
             border-radius: 10px;
         }
 
-        /* ===== VIP LIFETIME CARD (NEW) ===== */
+        /* ===== VIP LIFETIME CARD ===== */
         .vip-lifetime-card {
             border: 2px solid var(--gold);
             border-radius: 16px;
@@ -994,7 +994,7 @@
         <button class="btn-block" onclick="goToDeposit(119, 'Quarterly')">GET VIP</button>
     </div>
 
-    <!-- ===== VIP LIFETIME (NEW) ===== -->
+    <!-- ===== VIP LIFETIME ===== -->
     <div class="vip-lifetime-card">
         <span class="plan-badge">👑 LIFETIME</span>
         <h4>VIP LIFETIME</h4>
@@ -1221,6 +1221,14 @@
         Choose your VIP subscription and continue directly to the deposit page.
     </p>
 
+    <!-- ===== VIP WEEKLY (NEW) ===== -->
+    <div class="plan-card">
+        <h4>VIP WEEKLY</h4>
+        <div class="price">$15</div>
+        <div class="duration">7 DAYS ACCESS</div>
+        <button class="btn-block" onclick="goToDeposit(15, 'Weekly')">GET VIP</button>
+    </div>
+
     <div class="plan-card">
         <h4>VIP MONTHLY</h4>
         <div class="price">$49</div>
@@ -1236,7 +1244,7 @@
         <button class="btn-block" onclick="goToDeposit(119, 'Quarterly')">GET VIP</button>
     </div>
 
-    <!-- ===== VIP LIFETIME (NEW) ===== -->
+    <!-- ===== VIP LIFETIME ===== -->
     <div class="vip-lifetime-card">
         <span class="plan-badge">👑 LIFETIME</span>
         <h4>VIP LIFETIME</h4>
@@ -1409,10 +1417,8 @@
             getDoc = firebaseFirestoreModule.getDoc;
             serverTimestamp = firebaseFirestoreModule.serverTimestamp;
             
-            // مراقبة حالة تسجيل الدخول
             onAuthStateChanged(auth, async (user) => {
                 if (user) {
-                    // المستخدم مسجل → جلب بياناته من Firestore
                     await loadUserData(user.uid);
                 }
             });
@@ -1421,7 +1427,7 @@
         }
     }
 
-    // ===== SIGN UP (تسجيل حقيقي) =====
+    // ===== SIGN UP =====
     async function handleSignup() {
         const name = document.getElementById('signupName').value.trim();
         const email = document.getElementById('signupEmail').value.trim();
@@ -1448,12 +1454,9 @@
 
         try {
             showToast('Creating account...');
-            
-            // إنشاء المستخدم في Firebase Auth
             const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
             const user = userCredential.user;
 
-            // حفظ بيانات المستخدم في Firestore
             await setDoc(doc(db, 'users', user.uid), {
                 name: name,
                 email: email,
@@ -1481,7 +1484,7 @@
         }
     }
 
-    // ===== LOGIN (تسجيل حقيقي) =====
+    // ===== LOGIN =====
     async function handleLogin() {
         const email = document.getElementById('loginEmail').value.trim();
         const pass = document.getElementById('loginPassword').value;
@@ -1522,7 +1525,7 @@
         }
     }
 
-    // ===== LOAD USER DATA from Firestore =====
+    // ===== LOAD USER DATA =====
     let currentUserData = null;
 
     async function loadUserData(uid) {
@@ -1781,7 +1784,6 @@
             const signalsRef = collection(window.firebaseDB, 'signals');
             const q = query(signalsRef, orderBy('createdAt', 'desc'), limit(1));
 
-            // تحميل الصفقة الحالية أولاً
             const initialSnapshot = await getDocs(q);
             initialSnapshot.forEach(doc => {
                 const signal = { id: doc.id, ...doc.data() };
@@ -1789,13 +1791,11 @@
                 displayLatestSignal(signal);
             });
 
-            // الاستماع للتحديثات الفورية
             onSnapshot(q, (snapshot) => {
                 snapshot.docChanges().forEach((change) => {
                     if (change.type === 'added' || change.type === 'modified') {
                         const signal = { id: change.doc.id, ...change.doc.data() };
                         
-                        // إذا كانت صفقة جديدة
                         if (lastSignalId && lastSignalId !== signal.id) {
                             notifyNewSignal(signal);
                         }
@@ -1838,7 +1838,6 @@
     }
 }
 
-        // طلب إذن الإشعارات
         if ('Notification' in window && Notification.permission === 'default') {
             try { await Notification.requestPermission(); } catch(e) {}
         }
@@ -1846,7 +1845,6 @@
         const title = `🚀 صفقة جديدة: ${signal.direction}`;
         const body = `XAU/USD\nEntry: ${signal.entry}\nSL: ${signal.stopLoss}\nTP: ${signal.takeProfit}`;
 
-        // إشعار المتصفح
         if ('Notification' in window && Notification.permission === 'granted') {
             try {
                 new Notification(title, {
@@ -1857,10 +1855,8 @@
             } catch(e) { console.log(e); }
         }
 
-        // صوت تنبيه
         playAlertSound();
 
-        // عرض رسالة داخل التطبيق
         if (typeof showToast === 'function') {
             showToast(`🔔 صفقة جديدة: ${signal.direction}`);
         } else {
@@ -1871,7 +1867,6 @@
     function playAlertSound() {
         try {
             const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            // نغمتان
             [0, 0.3].forEach(delay => {
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
@@ -1974,12 +1969,9 @@ async function checkMissedSignals(){
             const d = doc.data();
             const created = d.createdAt?.seconds ? d.createdAt.seconds * 1000 : 0;
             
-            // فقط الصفقات الأحدث من آخر زيارة
             if(created > lastCheck){
-                // تحقق أنها للمستخدم أو للجميع
                 const isForMe = !d.targetUID || d.targetUID === u.uid;
                 if(isForMe){
-                    // تحقق أنها لم تُضف سابقاً
                     const notifId = 'sig-' + doc.id;
                     if(!userNotifs.find(n => n.id === notifId)){
                         const msg = '🚀 '+d.direction+' - XAU/USD\nEntry: '+d.entry+' | SL: '+d.stopLoss+' | TP: '+d.takeProfit;
@@ -2001,14 +1993,13 @@ async function checkMissedSignals(){
             if(typeof showToast === 'function') showToast('🔔 '+newCount+' new signal(s)');
         }
         
-        // تحديث وقت آخر زيارة
         localStorage.setItem('lastSignalCheck', Date.now().toString());
         
     } catch(e){ console.error('Check missed:', e); }
 }
 
 setTimeout(checkMissedSignals, 3000);
-setInterval(checkMissedSignals, 30000); // كل 30 ثانية
+setInterval(checkMissedSignals, 30000);
 </script>
     <style>
 .bottom-nav { z-index: 999999 !important; pointer-events: auto !important; }
