@@ -1,0 +1,27 @@
+{
+    "name": "Tradix AI - Premium Gold Signals",
+    "short_name": "Tradix AI",
+    "description": "AI-Powered Gold Trading Signals - Real-Time Market Analysis",
+    "start_url": "/",
+    "display": "standalone",
+    "orientation": "portrait",
+    "background_color": "#0a0a0a",
+    "theme_color": "#d4af37",
+    "lang": "ar",
+    "dir": "rtl",
+    "categories": ["finance", "business", "productivity"],
+    "icons": [
+        {
+            "src": "https://raw.githubusercontent.com/habib7514/TRADIX-ai/main/icons/file_0000000056f88208bb5a209182f356e3.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "https://raw.githubusercontent.com/habib7514/TRADIX-ai/main/icons/file_0000000056f88208bb5a209182f356e3.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ]
+}
