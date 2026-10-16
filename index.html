@@ -289,6 +289,30 @@
             border-radius: 50%;
         }
 
+        /* BACK BUTTON */
+        .back-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(212, 175, 55, 0.12);
+            border: 1.5px solid rgba(212, 175, 55, 0.5);
+            color: #d4af37;
+            text-decoration: none;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .back-btn:active {
+            background: #d4af37;
+            color: #000;
+            transform: scale(0.92);
+            box-shadow: 0 0 18px rgba(212, 175, 55, 0.6);
+        }
+        .back-btn svg { display: block; }
+
         /* TICKER */
         .ticker-container {
             background: linear-gradient(90deg, #1a1a1a, #141414, #1a1a1a);
@@ -508,7 +532,7 @@
             border-radius: 10px;
         }
 
-        /* ===== VIP LIFETIME CARD ===== */
+        /* VIP LIFETIME CARD */
         .vip-lifetime-card {
             border: 2px solid var(--gold);
             border-radius: 16px;
@@ -789,7 +813,6 @@
 .bottom-nav .nav-item .icon, .bottom-nav .nav-item span { pointer-events: none !important; }
 .bottom-nav .nav-item:active { transform: scale(0.95) !important; background: rgba(212, 175, 55, 0.1) !important; }
 
-/* ⭐ NEW: CLOSE X BUTTON IN NOTIFICATIONS MODAL */
 .notif-close-top {
     position: absolute;
     top: 14px;
@@ -846,7 +869,7 @@
 </head>
 <body>
     
-<!-- ================= SPLASH SCREEN ================= -->
+<!-- SPLASH SCREEN -->
 <div id="splash">
     <div class="logo-container">
         <div class="logo-circle"></div>
@@ -859,7 +882,7 @@
     </div>
 </div>
 
-<!-- ================= SIGN UP SCREEN ================= -->
+<!-- SIGN UP SCREEN -->
 <div id="signupScreen" class="screen">
     <div class="auth-container">
         <div class="auth-logo">
@@ -893,7 +916,7 @@
     </div>
 </div>
 
-<!-- ================= LOGIN SCREEN ================= -->
+<!-- LOGIN SCREEN -->
 <div id="loginScreen" class="screen">
     <div class="auth-container">
         <div class="auth-logo">
@@ -919,10 +942,16 @@
     </div>
 </div>
 
-<!-- ================= HOME SCREEN ================= -->
+<!-- HOME SCREEN -->
 <div id="homeScreen" class="screen">
     <div class="header">
         <div class="header-left">
+            <a href="https://tradelix-ai.netlify.app" class="back-btn" aria-label="Back">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14"/>
+                    <path d="M12 5l-7 7 7 7"/>
+                </svg>
+            </a>
             <div class="header-logo">T</div>
             <h1>TRADIX AI</h1>
         </div>
@@ -934,7 +963,6 @@
         <h2 id="userNameDisplay">Member</h2>
     </div>
 
-    <!-- Live Price Ticker -->
     <div class="ticker-container">
         <div class="ticker-row">
             <div class="ticker-left">
@@ -951,7 +979,6 @@
         </div>
     </div>
 
-    <!-- Gold Chart -->
     <div class="gold-chart-container">
         <div class="chart-title">
             <h4>📈 GOLD MARKET CHART</h4>
@@ -999,7 +1026,6 @@
         </svg>
     </div>
 
-    <!-- Stats -->
     <div class="stats-grid">
         <div class="stat-card">
             <div class="stat-icon">🎯</div>
@@ -1013,14 +1039,12 @@
         </div>
     </div>
 
-    <!-- Status Card -->
     <div class="card status-card">
         <div id="statusBadge" class="status-badge inactive">INACTIVE</div>
         <h2 id="statusTitle">No Active Subscription</h2>
         <p id="statusDesc">Subscribe to a VIP plan to start receiving premium gold signals.</p>
     </div>
     
-    <!-- Notification Permission -->
     <div id="notifPermissionBox" class="card" style="border-color: var(--gold);">
         <h3 style="color: var(--gold); margin-bottom: 8px; font-size: 15px;">🔔 Enable Notifications</h3>
         <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 12px; line-height: 1.5;">
@@ -1029,7 +1053,6 @@
     </div>
     <button onclick="alert(Notification.permission)">🔔</button>
 
-    <!-- VIP Plans -->
     <div class="section-title">💎 VIP PLANS</div>
     <div class="plan-card">
         <h4>VIP WEEKLY</h4>
@@ -1053,7 +1076,6 @@
         <button class="btn-block" onclick="goToDeposit(119, 'Quarterly')">GET VIP</button>
     </div>
 
-    <!-- ===== VIP LIFETIME ===== -->
     <div class="vip-lifetime-card">
         <span class="plan-badge">👑 LIFETIME</span>
         <h4>VIP LIFETIME</h4>
@@ -1062,7 +1084,6 @@
         <button class="btn-block" onclick="goToDeposit(300, 'Lifetime')">👑 GET LIFETIME VIP</button>
     </div>
 
-    <!-- Why Choose Us -->
     <div class="section-title" style="margin-top: 24px;">🏆 WHY CHOOSE US</div>
     
     <div class="feature-item">
@@ -1087,7 +1108,6 @@
         </div>
     </div>
 
-    <!-- How It Works -->
     <div class="section-title" style="margin-top: 24px;">📖 HOW IT WORKS</div>
     
     <div class="step-item">
@@ -1119,7 +1139,6 @@
         </div>
     </div>
 
-    <!-- Bottom Nav -->
     <div class="bottom-nav">
         <button class="nav-item active" onclick="showScreen('homeScreen')">
             <span class="icon">🏠</span>
@@ -1140,7 +1159,7 @@
     </div>
 </div>
 
-<!-- ================= DEPOSIT SCREEN ================= -->
+<!-- DEPOSIT SCREEN -->
 <div id="depositScreen" class="screen">
     <div class="header">
         <div class="header-left">
@@ -1189,10 +1208,16 @@
     </div>
 </div>
 
-<!-- ================= SIGNALS SCREEN ================= -->
+<!-- SIGNALS SCREEN -->
 <div id="signalsScreen" class="screen">
     <div class="header">
         <div class="header-left">
+            <a href="https://tradelix-ai.netlify.app" class="back-btn" aria-label="Back">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14"/>
+                    <path d="M12 5l-7 7 7 7"/>
+                </svg>
+            </a>
             <div class="header-logo">T</div>
             <h1>Signals</h1>
         </div>
@@ -1266,10 +1291,16 @@
     </div>
 </div>
 
-<!-- ================= VIP SCREEN ================= -->
+<!-- VIP SCREEN -->
 <div id="vipScreen" class="screen">
     <div class="header">
         <div class="header-left">
+            <a href="https://tradelix-ai.netlify.app" class="back-btn" aria-label="Back">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14"/>
+                    <path d="M12 5l-7 7 7 7"/>
+                </svg>
+            </a>
             <div class="header-logo">T</div>
             <h1>VIP Access</h1>
         </div>
@@ -1280,7 +1311,6 @@
         Choose your VIP subscription and continue directly to the deposit page.
     </p>
 
-    <!-- ===== VIP WEEKLY ===== -->
     <div class="plan-card">
         <h4>VIP WEEKLY</h4>
         <div class="price">$15</div>
@@ -1303,7 +1333,6 @@
         <button class="btn-block" onclick="goToDeposit(119, 'Quarterly')">GET VIP</button>
     </div>
 
-    <!-- ===== VIP LIFETIME ===== -->
     <div class="vip-lifetime-card">
         <span class="plan-badge">👑 LIFETIME</span>
         <h4>VIP LIFETIME</h4>
@@ -1352,10 +1381,16 @@
     </div>
 </div>
 
-<!-- ================= ACCOUNT SCREEN ================= -->
+<!-- ACCOUNT SCREEN -->
 <div id="accountScreen" class="screen">
     <div class="header">
         <div class="header-left">
+            <a href="https://tradelix-ai.netlify.app" class="back-btn" aria-label="Back">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14"/>
+                    <path d="M12 5l-7 7 7 7"/>
+                </svg>
+            </a>
             <div class="header-logo">T</div>
             <h1>Account</h1>
         </div>
@@ -1417,12 +1452,11 @@
     </div>
 </div>
 
-<!-- ================= TOAST ================= -->
+<!-- TOAST -->
 <div id="toast" class="toast">Message</div>
 
-<!-- ================= JAVASCRIPT ================= -->
+<!-- JAVASCRIPT -->
 <script>
-    // ===== إخفاء Netlify Badge =====
     function hideNetlifyBadge() {
         const selectors = [
             '[data-netlify-badge]', '#netlify-badge', '.netlify-badge',
@@ -1436,7 +1470,6 @@
     hideNetlifyBadge();
     setInterval(hideNetlifyBadge, 1000);
 
-    // ===== SPLASH SCREEN =====
     setTimeout(() => {
         document.getElementById('splash').classList.add('hide');
         setTimeout(() => {
@@ -1444,7 +1477,6 @@
         }, 800);
     }, 5000);
 
-    // ===== SCREEN NAVIGATION =====
     function showScreen(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         const screen = document.getElementById(id);
@@ -1453,7 +1485,6 @@
         updateUI();
     }
 
-    // ===== FIREBASE IMPORTS =====
     let auth, db;
     let createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged;
     let doc, setDoc, getDoc, serverTimestamp;
@@ -1486,30 +1517,16 @@
         }
     }
 
-    // ===== SIGN UP =====
     async function handleSignup() {
         const name = document.getElementById('signupName').value.trim();
         const email = document.getElementById('signupEmail').value.trim();
         const pass = document.getElementById('signupPassword').value;
         const confirm = document.getElementById('signupConfirm').value;
 
-        if (!name || !email || !pass) {
-            showToast('Please fill all fields');
-            return;
-        }
-        if (pass !== confirm) {
-            showToast('Passwords do not match');
-            return;
-        }
-        if (pass.length < 6) {
-            showToast('Password must be at least 6 characters');
-            return;
-        }
-
-        if (!auth) {
-            showToast('Please wait, loading...');
-            return;
-        }
+        if (!name || !email || !pass) { showToast('Please fill all fields'); return; }
+        if (pass !== confirm) { showToast('Passwords do not match'); return; }
+        if (pass.length < 6) { showToast('Password must be at least 6 characters'); return; }
+        if (!auth) { showToast('Please wait, loading...'); return; }
 
         try {
             showToast('Creating account...');
@@ -1531,60 +1548,36 @@
             setTimeout(() => showScreen('loginScreen'), 1500);
         } catch (error) {
             console.error(error);
-            if (error.code === 'auth/email-already-in-use') {
-                showToast('Email already registered');
-            } else if (error.code === 'auth/invalid-email') {
-                showToast('Invalid email address');
-            } else if (error.code === 'auth/weak-password') {
-                showToast('Password too weak');
-            } else {
-                showToast('Error: ' + error.message);
-            }
+            if (error.code === 'auth/email-already-in-use') showToast('Email already registered');
+            else if (error.code === 'auth/invalid-email') showToast('Invalid email address');
+            else if (error.code === 'auth/weak-password') showToast('Password too weak');
+            else showToast('Error: ' + error.message);
         }
     }
 
-    // ===== LOGIN =====
     async function handleLogin() {
         const email = document.getElementById('loginEmail').value.trim();
         const pass = document.getElementById('loginPassword').value;
 
-        if (!email || !pass) {
-            showToast('Please enter email and password');
-            return;
-        }
-
-        if (!auth) {
-            showToast('Please wait, loading...');
-            return;
-        }
+        if (!email || !pass) { showToast('Please enter email and password'); return; }
+        if (!auth) { showToast('Please wait, loading...'); return; }
 
         try {
             showToast('Logging in...');
             const userCredential = await signInWithEmailAndPassword(auth, email, pass);
             const user = userCredential.user;
-            
             await loadUserData(user.uid);
-            
             showToast('✅ Welcome back!');
-            setTimeout(() => {
-                showScreen('homeScreen');
-                updateUI();
-            }, 1000);
+            setTimeout(() => { showScreen('homeScreen'); updateUI(); }, 1000);
         } catch (error) {
             console.error(error);
-            if (error.code === 'auth/user-not-found') {
-                showToast('No account found');
-            } else if (error.code === 'auth/wrong-password') {
-                showToast('Wrong password');
-            } else if (error.code === 'auth/invalid-credential') {
-                showToast('Invalid email or password');
-            } else {
-                showToast('Login failed: ' + error.message);
-            }
+            if (error.code === 'auth/user-not-found') showToast('No account found');
+            else if (error.code === 'auth/wrong-password') showToast('Wrong password');
+            else if (error.code === 'auth/invalid-credential') showToast('Invalid email or password');
+            else showToast('Login failed: ' + error.message);
         }
     }
 
-    // ===== LOAD USER DATA =====
     let currentUserData = null;
 
     async function loadUserData(uid) {
@@ -1606,20 +1599,14 @@
         }
     }
 
-    // ===== LOGOUT =====
     async function handleLogout() {
-        try {
-            await signOut(auth);
-        } catch (error) {
-            console.error(error);
-        }
+        try { await signOut(auth); } catch (error) { console.error(error); }
         localStorage.removeItem('tradix_user');
         currentUserData = null;
         showToast('Logged out');
         setTimeout(() => showScreen('loginScreen'), 1000);
     }
 
-    // ===== UPDATE UI =====
     function updateUI() {
         const user = currentUserData || JSON.parse(localStorage.getItem('tradix_user') || '{}');
         
@@ -1673,7 +1660,6 @@
         }
     }
 
-    // ===== DEPOSIT =====
     let currentPlan = { price: 0, name: '' };
 
     function goToDeposit(price, name) {
@@ -1700,16 +1686,10 @@
 
     async function submitDeposit() {
         const hash = document.getElementById('txHash').value.trim();
-        if (!hash) {
-            showToast('Please enter transaction hash');
-            return;
-        }
+        if (!hash) { showToast('Please enter transaction hash'); return; }
 
         const user = currentUserData || JSON.parse(localStorage.getItem('tradix_user') || '{}');
-        if (!user.uid) {
-            showToast('Please login first');
-            return;
-        }
+        if (!user.uid) { showToast('Please login first'); return; }
 
         try {
             await setDoc(doc(db, 'users', user.uid), {
@@ -1725,17 +1705,13 @@
             localStorage.setItem('tradix_user', JSON.stringify(currentUserData));
 
             showToast('✅ Submitted! Awaiting admin.');
-            setTimeout(() => {
-                showScreen('homeScreen');
-                updateUI();
-            }, 1500);
+            setTimeout(() => { showScreen('homeScreen'); updateUI(); }, 1500);
         } catch (error) {
             console.error(error);
             showToast('Error submitting deposit');
         }
     }
 
-    // ===== LIVE GOLD PRICE =====
     let lastPrice = 0;
 
     async function fetchGoldPrice() {
@@ -1745,9 +1721,7 @@
             const res1 = await fetch('https://api.gold-api.com/price/XAU');
             if (res1.ok) {
                 const data1 = await res1.json();
-                if (data1 && data1.price) {
-                    price = parseFloat(data1.price);
-                }
+                if (data1 && data1.price) price = parseFloat(data1.price);
             }
         } catch (e) { console.log('gold-api failed'); }
 
@@ -1756,9 +1730,7 @@
                 const res2 = await fetch('https://api.metals.live/v1/spot/gold');
                 if (res2.ok) {
                     const data2 = await res2.json();
-                    if (Array.isArray(data2) && data2[0] && data2[0][1]) {
-                        price = parseFloat(data2[0][1]);
-                    }
+                    if (Array.isArray(data2) && data2[0] && data2[0][1]) price = parseFloat(data2[0][1]);
                 }
             } catch (e) { console.log('metals.live failed'); }
         }
@@ -1775,11 +1747,8 @@
         if (isNaN(priceNum) || priceNum <= 0) return;
 
         let change = 0;
-        if (lastPrice > 0) {
-            change = ((priceNum - lastPrice) / lastPrice) * 100;
-        } else {
-            change = (Math.random() * 0.6) - 0.3;
-        }
+        if (lastPrice > 0) change = ((priceNum - lastPrice) / lastPrice) * 100;
+        else change = (Math.random() * 0.6) - 0.3;
         lastPrice = priceNum;
 
         const priceEl = document.getElementById('liveGoldPrice');
@@ -1809,7 +1778,6 @@
         }
     }
 
-    // ===== TOAST =====
     function showToast(msg) {
         const t = document.getElementById('toast');
         t.textContent = msg;
@@ -1817,7 +1785,6 @@
         setTimeout(() => t.classList.remove('show'), 2500);
     }
 
-    // ===== INIT =====
     window.addEventListener('load', () => {
         initFirebase();
         fetchGoldPrice();
@@ -1826,7 +1793,7 @@
     });
 </script>
 
-<!-- ================= REAL-TIME SIGNALS ================= -->
+<!-- REAL-TIME SIGNALS -->
 <script>
     let lastSignalId = null;
     let signalsInitialized = false;
@@ -1857,10 +1824,7 @@
                 snapshot.docChanges().forEach((change) => {
                     if (change.type === 'added' || change.type === 'modified') {
                         const signal = { id: change.doc.id, ...change.doc.data() };
-                        
-                        if (lastSignalId && lastSignalId !== signal.id) {
-                            notifyNewSignal(signal);
-                        }
+                        if (lastSignalId && lastSignalId !== signal.id) notifyNewSignal(signal);
                         lastSignalId = signal.id;
                         displayLatestSignal(signal);
                     }
@@ -1919,10 +1883,7 @@
         }
 
         playAlertSound();
-
-        if (typeof showToast === 'function') {
-            showToast(`🔔 صفقة جديدة: ${signal.direction}`);
-        }
+        if (typeof showToast === 'function') showToast(`🔔 صفقة جديدة: ${signal.direction}`);
     }
 
     function playAlertSound() {
@@ -2058,21 +2019,14 @@ setTimeout(initUserNotif,3000);
 
 <div class="bell-icon" id="userBell" onclick="openUserNotifModal()" style="position:fixed;top:16px;left:16px;z-index:9998;cursor:pointer;">🔔</div>
 
-<!-- ═══════════ ⭐ NOTIFICATIONS MODAL — NEW (مع زر X في الأعلى) ═══════════ -->
 <div id="userNotifModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:99999;padding:16px;overflow-y:auto;">
     <div style="background:#141414;border:1px solid #d4af37;border-radius:16px;padding:20px;max-width:420px;margin:40px auto;position:relative;">
-        
-        <!-- ⭐ زر X في أعلى اليمين -->
         <button class="notif-close-top" onclick="closeUserNotifModal()" aria-label="Close">✕</button>
-        
         <h3 style="color:#d4af37;margin-bottom:16px;text-align:center;padding-right:40px;padding-left:40px;font-family:Tajawal,sans-serif;">🔔 My Notifications</h3>
         <div id="userNotifList" style="font-family:Tajawal,sans-serif;"></div>
-        
-        <!-- زر Close السفلي (يبقى كخيار ثاني) -->
         <button onclick="closeUserNotifModal()" style="width:100%;padding:14px;border-radius:12px;border:1px solid #444;background:transparent;color:#fff;margin-top:12px;font-family:Tajawal,sans-serif;font-weight:700;cursor:pointer;touch-action:manipulation;">Close</button>
     </div>
 </div>
-<!-- ═══════════ END NOTIFICATIONS MODAL ═══════════ -->
 
 <script>
 let userNotifs = JSON.parse(localStorage.getItem('userNotifs')||'[]');
@@ -2128,7 +2082,6 @@ function closeUserNotifModal(){
     document.getElementById('userNotifModal').style.display = 'none';
 }
 
-// ===== جلب الصفقات الجديدة منذ آخر زيارة =====
 async function checkMissedSignals(){
     const __uid=JSON.parse(localStorage.getItem('tradix_user')||'{}').uid;
     const __lastUid=localStorage.getItem('notif_uid');
@@ -2190,7 +2143,8 @@ async function checkMissedSignals(){
 setTimeout(checkMissedSignals, 3000);
 setInterval(checkMissedSignals, 30000);
 </script>
-    <!-- ═══════════ PWA INSTALL BANNER ═══════════ -->
+
+<!-- PWA INSTALL BANNER -->
 <div id="pwaInstallBanner" style="display:none; position:fixed; top:0; left:0; right:0; z-index:999999; padding:12px 16px; background:linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%); border-bottom:2px solid #d4af37; box-shadow:0 4px 20px rgba(212,175,55,0.3); animation:slideDown 0.5s ease;">
     <div style="display:flex; align-items:center; gap:12px; max-width:480px; margin:0 auto;">
         <img src="https://raw.githubusercontent.com/habib7514/TRADIX-ai/main/icons/file_0000000056f88208bb5a209182f356e3.png" alt="Tradix AI" style="width:50px; height:50px; border-radius:12px; border:1.5px solid #d4af37; flex-shrink:0; box-shadow:0 0 15px rgba(212,175,55,0.4);">
@@ -2272,7 +2226,6 @@ setInterval(checkMissedSignals, 30000);
         if (!installed) localStorage.setItem(PWA_BANNER_KEY, Date.now().toString());
     }
 </script>
-<!-- ═══════════ END PWA INSTALL BANNER ═══════════ -->
 
 </body>
 </html>
