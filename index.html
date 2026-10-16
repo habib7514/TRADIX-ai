@@ -1451,7 +1451,14 @@
     setTimeout(() => {
         document.getElementById('splash').classList.add('hide');
         setTimeout(() => {
-            showScreen('signupScreen');
+            const savedUser = JSON.parse(localStorage.getItem('tradix_user') || '{}');
+            if (savedUser.uid) {
+                currentUserData = savedUser;
+                showScreen('homeScreen');
+                updateUI();
+            } else {
+                showScreen('signupScreen');
+            }
         }, 800);
     }, 5000);
 
@@ -1473,6 +1480,12 @@
             const firebaseFirestoreModule = await import("https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js");
             
             auth = window.firebaseAuth;
+            
+            try {
+                await firebaseAuthModule.setPersistence(auth, firebaseAuthModule.browserLocalPersistence);
+                console.log('✅ Persistence set: LOCAL');
+            } catch(e) { console.warn('Persistence error:', e); }
+            
             db = window.firebaseDB;
             
             createUserWithEmailAndPassword = firebaseAuthModule.createUserWithEmailAndPassword;
