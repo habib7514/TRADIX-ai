@@ -1691,7 +1691,24 @@
             document.getElementById('accStatus').textContent = (user.status || 'inactive').toUpperCase();
             document.getElementById('accStart').textContent = user.startDate || '-';
             document.getElementById('accExpiry').textContent = user.expiryDate || '-';
-            document.getElementById('accDays').textContent = user.daysLeft || '-';
+            
+            // ⭐ تعديل حساب الأيام المتبقية
+            let daysLeftText = '-';
+            if (user.expiryDate) {
+                const expiry = new Date(user.expiryDate);
+                const now = new Date();
+                const diffTime = expiry - now;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                
+                if (diffDays > 0) {
+                    daysLeftText = diffDays + ' Days';
+                } else if (diffDays === 0) {
+                    daysLeftText = 'Expires Today';
+                } else {
+                    daysLeftText = 'Expired';
+                }
+            }
+            document.getElementById('accDays').textContent = daysLeftText;
         }
     }
 
