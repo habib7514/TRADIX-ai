@@ -1503,7 +1503,6 @@
         updateUI();
     }
 
-    // دالة جديدة للتحويل إلى قسم الباقات
     function goToHomeAndScrollToPlans() {
         showScreen('homeScreen');
         setTimeout(() => {
@@ -1692,7 +1691,6 @@
             document.getElementById('accStart').textContent = user.startDate || '-';
             document.getElementById('accExpiry').textContent = user.expiryDate || '-';
             
-            // ⭐ تعديل حساب الأيام المتبقية
             let daysLeftText = '-';
             if (user.expiryDate) {
                 const expiry = new Date(user.expiryDate);
@@ -1859,21 +1857,22 @@
 
         try {
             const fsModule = await import("https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js");
-            const { collection, query, orderBy, limit, onSnapshot, getDocs } = fsModule;
+            const { collection, query, orderBy, limit, onSnapshot } = fsModule;
 
             const signalsRef = collection(window.firebaseDB, 'signals');
-            // جلب آخر 5 إشارات بدلاً من واحدة
             const q = query(signalsRef, orderBy('createdAt', 'desc'), limit(5));
 
             onSnapshot(q, (snapshot) => {
-                // البحث عن أول إشارة تحتوي على بيانات حقيقية (تجاهل الإشارات الفارغة)
                 let validSignal = null;
-                snapshot.docs.forEach(doc => {
+                // التعديل الأول: إضافة break لجلب أحدث إشارة فقط
+                for (const doc of snapshot.docs) {
                     const d = doc.data();
-                    if (d.entry && d.entry !== '-' && d.entry !== '') {
+                    const entryCheck = d.entry || d.entryPrice || d.price;
+                    if (entryCheck && entryCheck !== '-' && entryCheck !== '') {
                         validSignal = { id: doc.id, ...d };
+                        break; // التوقف عند أول إشارة صالحة (أحدث إشارة)
                     }
-                });
+                }
 
                 if (!validSignal) {
                     const a = document.getElementById('activeSignalBox');
@@ -1901,8 +1900,13 @@
         const lockedBox = document.getElementById('lockedSignalBox');
         
         if (!activeBox || !lockedBox) return;
+
+        // التعديل الثاني: قراءة جميع الأسماء البديلة
+        const entryVal = signal.entry || signal.entryPrice || signal.price;
+        const slVal = signal.stopLoss || signal.sl;
+        const tpVal = signal.takeProfit || signal.tp;
         
-        if (!signal || !signal.entry) {
+        if (!signal || !entryVal) {
             activeBox.classList.add('hidden');
             lockedBox.classList.remove('hidden');
             return;
@@ -1911,9 +1915,9 @@
         if (user.status === 'active') {
             activeBox.classList.remove('hidden');
             lockedBox.classList.add('hidden');
-            document.getElementById('sigEntry').textContent = signal.entry || '-';
-            document.getElementById('sigSL').textContent = signal.stopLoss || '-';
-            document.getElementById('sigTP').textContent = signal.takeProfit || '-';
+            document.getElementById('sigEntry').textContent = entryVal || '-';
+            document.getElementById('sigSL').textContent = slVal || '-';
+            document.getElementById('sigTP').textContent = tpVal || '-';
             const h = activeBox.querySelector('.signal-header h3');
             if (h) h.textContent = (signal.direction || 'SIGNAL') + ' - XAU/USD';
         } else {
@@ -1927,8 +1931,12 @@
             try { await Notification.requestPermission(); } catch(e) {}
         }
 
+        const entryVal = signal.entry || signal.entryPrice || signal.price || '-';
+        const slVal = signal.stopLoss || signal.sl || '-';
+        const tpVal = signal.takeProfit || signal.tp || '-';
+
         const title = `🚀 صفقة جديدة: ${signal.direction}`;
-        const body = `XAU/USD\nEntry: ${signal.entry}\nSL: ${signal.stopLoss}\nTP: ${signal.takeProfit}`;
+        const body = `XAU/USD\nEntry: ${entryVal}\nSL: ${slVal}\nTP: ${tpVal}`;
 
         if ('Notification' in window && Notification.permission === 'granted') {
             try {
@@ -1979,12 +1987,15 @@ async function startSignalListener(){
             const u=JSON.parse(localStorage.getItem('tradix_user')||'{}');
             
             let validSignal = null;
-            s.docs.forEach(doc => {
+            // التعديل الثالث: إضافة break لجلب أحدث إشارة فقط
+            for (const doc of s.docs) {
                 const d = doc.data();
-                if (d.entry && d.entry !== '-' && d.entry !== '') {
+                const entryCheck = d.entry || d.entryPrice || d.price;
+                if (entryCheck && entryCheck !== '-' && entryCheck !== '') {
                     validSignal = { id: doc.id, ...d };
+                    break; // التوقف عند أول إشارة صالحة (أحدث إشارة)
                 }
-            });
+            }
 
             if(!validSignal){
                 const a=document.getElementById('activeSignalBox');
@@ -2007,14 +2018,20 @@ async function startSignalListener(){
                 const se=document.getElementById('sigEntry');
                 const ss=document.getElementById('sigSL');
                 const st=document.getElementById('sigTP');
-                if(se)se.textContent=d.entry||'-';
-                if(ss)ss.textContent=d.stopLoss||'-';
-                if(st)st.textContent=d.takeProfit||'-';
+                
+                // التعديل الرابع: قراءة جميع الأسماء البديلة
+                const entryVal = d.entry || d.entryPrice || d.price || '-';
+                const slVal = d.stopLoss || d.sl || '-';
+                const tpVal = d.takeProfit || d.tp || '-';
+                
+                if(se)se.textContent=entryVal;
+                if(ss)ss.textContent=slVal;
+                if(st)st.textContent=tpVal;
                 const h2=a?a.querySelector('.signal-header h3'):null;
                 if(h2)h2.textContent=(d.direction||'SIGNAL')+' - XAU/USD';
             }
             if(!isFirstLoad&&lastSignalId!==null&&lastSignalId!==id&&u.status==='active'){
-                notifyUserSignal({id:id,direction:d.direction,entry:d.entry,stopLoss:d.stopLoss,takeProfit:d.takeProfit});
+                notifyUserSignal({id:id,direction:d.direction,entry:d.entry||d.entryPrice||d.price,stopLoss:d.stopLoss||d.sl,takeProfit:d.takeProfit||d.tp});
             }
             lastSignalId=id;
             isFirstLoad=false;
@@ -2104,7 +2121,7 @@ function saveUserNotifs(){
 
 function updateUserBell(){
     const unread = userNotifs.filter(n=>!n.read).length;
-    const bell = document.querySelector('.bell-icon'); // استخدام الزر العلوي
+    const bell = document.querySelector('.bell-icon');
     if(!bell) return;
     let b = bell.querySelector('.notifBadge');
     if(unread > 0){
@@ -2182,7 +2199,12 @@ async function checkMissedSignals(){
                 if(isForMe){
                     const notifId = 'sig-' + doc.id;
                     if(!userNotifs.find(n => n.id === notifId)){
-                        const msg = '🚀 '+d.direction+' - XAU/USD\nEntry: '+d.entry+' | SL: '+d.stopLoss+' | TP: '+d.takeProfit;
+                        // التعديل الخامس: استخدام الأسماء البديلة في الإشعارات
+                        const entryVal = d.entry || d.entryPrice || d.price || '-';
+                        const slVal = d.stopLoss || d.sl || '-';
+                        const tpVal = d.takeProfit || d.tp || '-';
+                        
+                        const msg = '🚀 '+d.direction+' - XAU/USD\nEntry: '+entryVal+' | SL: '+slVal+' | TP: '+tpVal;
                         userNotifs.unshift({
                             id: notifId,
                             message: msg,
