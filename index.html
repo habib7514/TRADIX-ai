@@ -1119,7 +1119,14 @@
             <span>Home</span>
         </button>
         <button class="nav-item" onclick="showScreen('signalsScreen')">
-            <span class="icon">📊</span>
+            <span class="icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="color: #d4af37;">
+                    <path d="M3 17L9 11L13 15L21 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M21 3V7H17" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="9" cy="11" r="1.5" fill="currentColor"/>
+                    <circle cx="13" cy="15" r="1.5" fill="currentColor"/>
+                </svg>
+            </span>
             <span>Signals</span>
         </button>
         <button class="nav-item" onclick="showScreen('vipScreen')">
@@ -1170,7 +1177,14 @@
             <span class="icon">🏠</span><span>Home</span>
         </button>
         <button class="nav-item" onclick="showScreen('signalsScreen')">
-            <span class="icon">📊</span><span>Signals</span>
+            <span class="icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="color: #d4af37;">
+                    <path d="M3 17L9 11L13 15L21 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M21 3V7H17" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="9" cy="11" r="1.5" fill="currentColor"/>
+                    <circle cx="13" cy="15" r="1.5" fill="currentColor"/>
+                </svg>
+            </span><span>Signals</span>
         </button>
         <button class="nav-item" onclick="showScreen('vipScreen')">
             <span class="icon">💎</span><span>VIP</span>
@@ -1247,7 +1261,7 @@
         <div class="lock-icon">🔒</div>
         <h3>Premium Access Required</h3>
         <p>Subscribe to a VIP plan to receive premium gold signals with Entry, Stop Loss, and Take Profit levels.</p>
-        <button class="btn-block" style="margin-top: 16px;" onclick="showScreen('homeScreen')">View VIP Plans</button>
+        <button class="btn-block" style="margin-top: 16px;" onclick="goToHomeAndScrollToPlans()">View VIP Plans</button>
     </div>
 
     <div class="bottom-nav">
@@ -1255,7 +1269,14 @@
             <span class="icon">🏠</span><span>Home</span>
         </button>
         <button class="nav-item active" onclick="showScreen('signalsScreen')">
-            <span class="icon">📊</span><span>Signals</span>
+            <span class="icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="color: #d4af37;">
+                    <path d="M3 17L9 11L13 15L21 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M21 3V7H17" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="9" cy="11" r="1.5" fill="currentColor"/>
+                    <circle cx="13" cy="15" r="1.5" fill="currentColor"/>
+                </svg>
+            </span><span>Signals</span>
         </button>
         <button class="nav-item" onclick="showScreen('vipScreen')">
             <span class="icon">💎</span><span>VIP</span>
@@ -1346,7 +1367,14 @@
             <span class="icon">🏠</span><span>Home</span>
         </button>
         <button class="nav-item" onclick="showScreen('signalsScreen')">
-            <span class="icon">📊</span><span>Signals</span>
+            <span class="icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="color: #d4af37;">
+                    <path d="M3 17L9 11L13 15L21 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M21 3V7H17" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="9" cy="11" r="1.5" fill="currentColor"/>
+                    <circle cx="13" cy="15" r="1.5" fill="currentColor"/>
+                </svg>
+            </span><span>Signals</span>
         </button>
         <button class="nav-item active" onclick="showScreen('vipScreen')">
             <span class="icon">💎</span><span>VIP</span>
@@ -1419,7 +1447,14 @@
             <span class="icon">🏠</span><span>Home</span>
         </button>
         <button class="nav-item" onclick="showScreen('signalsScreen')">
-            <span class="icon">📊</span><span>Signals</span>
+            <span class="icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="color: #d4af37;">
+                    <path d="M3 17L9 11L13 15L21 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M21 3V7H17" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="9" cy="11" r="1.5" fill="currentColor"/>
+                    <circle cx="13" cy="15" r="1.5" fill="currentColor"/>
+                </svg>
+            </span><span>Signals</span>
         </button>
         <button class="nav-item" onclick="showScreen('vipScreen')">
             <span class="icon">💎</span><span>VIP</span>
@@ -1466,6 +1501,17 @@
         if (screen) screen.classList.add('active');
         window.scrollTo(0, 0);
         updateUI();
+    }
+
+    // دالة جديدة للتحويل إلى قسم الباقات
+    function goToHomeAndScrollToPlans() {
+        showScreen('homeScreen');
+        setTimeout(() => {
+            const plansTitle = document.querySelector('#homeScreen .section-title');
+            if(plansTitle) {
+                plansTitle.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }, 300);
     }
 
     let auth, db;
