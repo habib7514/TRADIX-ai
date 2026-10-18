@@ -1862,24 +1862,31 @@
             const { collection, query, orderBy, limit, onSnapshot, getDocs } = fsModule;
 
             const signalsRef = collection(window.firebaseDB, 'signals');
-            const q = query(signalsRef, orderBy('createdAt', 'desc'), limit(1));
-
-            const initialSnapshot = await getDocs(q);
-            initialSnapshot.forEach(doc => {
-                const signal = { id: doc.id, ...doc.data() };
-                lastSignalId = signal.id;
-                displayLatestSignal(signal);
-            });
+            // جلب آخر 5 إشارات بدلاً من واحدة
+            const q = query(signalsRef, orderBy('createdAt', 'desc'), limit(5));
 
             onSnapshot(q, (snapshot) => {
-                snapshot.docChanges().forEach((change) => {
-                    if (change.type === 'added' || change.type === 'modified') {
-                        const signal = { id: change.doc.id, ...change.doc.data() };
-                        if (lastSignalId && lastSignalId !== signal.id) notifyNewSignal(signal);
-                        lastSignalId = signal.id;
-                        displayLatestSignal(signal);
+                // البحث عن أول إشارة تحتوي على بيانات حقيقية (تجاهل الإشارات الفارغة)
+                let validSignal = null;
+                snapshot.docs.forEach(doc => {
+                    const d = doc.data();
+                    if (d.entry && d.entry !== '-' && d.entry !== '') {
+                        validSignal = { id: doc.id, ...d };
                     }
                 });
+
+                if (!validSignal) {
+                    const a = document.getElementById('activeSignalBox');
+                    const l = document.getElementById('lockedSignalBox');
+                    if (a) a.classList.add('hidden');
+                    if (l) { l.classList.remove('hidden'); const h = l.querySelector('h3'); if (h) h.textContent = 'No Active Signal'; }
+                    return;
+                }
+
+                const signal = validSignal;
+                if (lastSignalId && lastSignalId !== signal.id) notifyNewSignal(signal);
+                lastSignalId = signal.id;
+                displayLatestSignal(signal);
             });
 
             console.log('✅ Signals listener active');
@@ -1966,11 +1973,20 @@ async function startSignalListener(){
         const m=await import("https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js");
         const{collection,query,orderBy,limit,onSnapshot}=m;
         const r=collection(window.firebaseDB,'signals');
-        const q=query(r,orderBy('createdAt','desc'),limit(1));
+        const q=query(r,orderBy('createdAt','desc'),limit(5));
         let isFirstLoad=true;
         onSnapshot(q,s=>{
             const u=JSON.parse(localStorage.getItem('tradix_user')||'{}');
-            if(s.empty||s.docs.length===0){
+            
+            let validSignal = null;
+            s.docs.forEach(doc => {
+                const d = doc.data();
+                if (d.entry && d.entry !== '-' && d.entry !== '') {
+                    validSignal = { id: doc.id, ...d };
+                }
+            });
+
+            if(!validSignal){
                 const a=document.getElementById('activeSignalBox');
                 const l=document.getElementById('lockedSignalBox');
                 if(a)a.classList.add('hidden');
@@ -1979,9 +1995,10 @@ async function startSignalListener(){
                 isFirstLoad=false;
                 return;
             }
-            const doc=s.docs[0];
-            const d=doc.data();
-            const id=doc.id;
+            
+            const d = validSignal;
+            const id = d.id;
+            
             if(u.status==='active'){
                 const a=document.getElementById('activeSignalBox');
                 const l=document.getElementById('lockedSignalBox');
