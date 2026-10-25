@@ -15,13 +15,14 @@
         import { getAuth } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
         import { getFirestore } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
+        // ✅ تم توحيد الإعدادات مع مشروع Tradelix الرئيسي
         const firebaseConfig = {
-            apiKey: "AIzaSyClehKAxJTZjsHA1ye8mDyRQcPBMPmPC3c",
-            authDomain: "tradix-ai.firebaseapp.com",
-            projectId: "tradix-ai",
-            storageBucket: "tradix-ai.firebasestorage.app",
-            messagingSenderId: "154893572354",
-            appId: "1:154893572354:web:cd017c0413c7df41950a1b"
+            apiKey: "AIzaSyAPHGtTeDNamwyR2kfg-b9ABp7pNyyiPKM",
+            authDomain: "tradelix-ai.firebaseapp.com",
+            projectId: "tradelix-ai",
+            storageBucket: "tradelix-ai.firebasestorage.app",
+            messagingSenderId: "374195897663",
+            appId: "1:374195897663:web:e1ed0ce2c30a4b6aeabf8a"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -283,7 +284,7 @@
             width: 8px; height: 8px;
             background: var(--red);
             border-radius: 50%;
-            display: none; /* إخفاء النقطة الحمراء افتراضياً */
+            display: none;
         }
 
         .back-btn {
@@ -1567,7 +1568,8 @@
             const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
             const user = userCredential.user;
 
-            await setDoc(doc(db, 'users', user.uid), {
+            // ✅ تم تغيير users إلى tradelix_users
+            await setDoc(doc(db, 'tradelix_users', user.uid), {
                 name: name,
                 email: email,
                 status: 'inactive',
@@ -1616,7 +1618,8 @@
 
     async function loadUserData(uid) {
         try {
-            const userDoc = await getDoc(doc(db, 'users', uid));
+            // ✅ تم تغيير users إلى tradelix_users
+            const userDoc = await getDoc(doc(db, 'tradelix_users', uid));
             if (userDoc.exists()) {
                 currentUserData = { uid: uid, ...userDoc.data() };
                 const lastUid = localStorage.getItem('lastUid');
@@ -1674,7 +1677,8 @@
         const activeSignal = document.getElementById('activeSignalBox');
         const lockedSignal = document.getElementById('lockedSignalBox');
         if (activeSignal && lockedSignal) {
-            if (user.status === 'active') {
+            // ✅ إضافة التحقق من نوع الباقة
+            if (user.status === 'active' && (user.planType === 'gold' || user.planType === 'both')) {
                 activeSignal.classList.remove('hidden');
                 lockedSignal.classList.add('hidden');
             } else {
@@ -1742,7 +1746,8 @@
         if (!user.uid) { showToast('Please login first'); return; }
 
         try {
-            await setDoc(doc(db, 'users', user.uid), {
+            // ✅ تم تغيير users إلى tradelix_users
+            await setDoc(doc(db, 'tradelix_users', user.uid), {
                 status: 'pending',
                 plan: 'VIP ' + currentPlan.name,
                 txHash: hash,
@@ -1859,18 +1864,18 @@
             const fsModule = await import("https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js");
             const { collection, query, orderBy, limit, onSnapshot } = fsModule;
 
-            const signalsRef = collection(window.firebaseDB, 'signals');
+            // ✅ تم تغيير signals إلى gold_signals
+            const signalsRef = collection(window.firebaseDB, 'gold_signals');
             const q = query(signalsRef, orderBy('createdAt', 'desc'), limit(5));
 
             onSnapshot(q, (snapshot) => {
                 let validSignal = null;
-                // التعديل الأول: إضافة break لجلب أحدث إشارة فقط
                 for (const doc of snapshot.docs) {
                     const d = doc.data();
                     const entryCheck = d.entry || d.entryPrice || d.price;
                     if (entryCheck && entryCheck !== '-' && entryCheck !== '') {
                         validSignal = { id: doc.id, ...d };
-                        break; // التوقف عند أول إشارة صالحة (أحدث إشارة)
+                        break;
                     }
                 }
 
@@ -1901,7 +1906,6 @@
         
         if (!activeBox || !lockedBox) return;
 
-        // التعديل الثاني: قراءة جميع الأسماء البديلة
         const entryVal = signal.entry || signal.entryPrice || signal.price;
         const slVal = signal.stopLoss || signal.sl;
         const tpVal = signal.takeProfit || signal.tp;
@@ -1912,7 +1916,8 @@
             return;
         }
         
-        if (user.status === 'active') {
+        // ✅ التحقق من نوع الباقة
+        if (user.status === 'active' && (user.planType === 'gold' || user.planType === 'both')) {
             activeBox.classList.remove('hidden');
             lockedBox.classList.add('hidden');
             document.getElementById('sigEntry').textContent = entryVal || '-';
@@ -1980,20 +1985,20 @@ async function startSignalListener(){
     try{
         const m=await import("https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js");
         const{collection,query,orderBy,limit,onSnapshot}=m;
-        const r=collection(window.firebaseDB,'signals');
+        // ✅ تم تغيير signals إلى gold_signals
+        const r=collection(window.firebaseDB,'gold_signals');
         const q=query(r,orderBy('createdAt','desc'),limit(5));
         let isFirstLoad=true;
         onSnapshot(q,s=>{
             const u=JSON.parse(localStorage.getItem('tradix_user')||'{}');
             
             let validSignal = null;
-            // التعديل الثالث: إضافة break لجلب أحدث إشارة فقط
             for (const doc of s.docs) {
                 const d = doc.data();
                 const entryCheck = d.entry || d.entryPrice || d.price;
                 if (entryCheck && entryCheck !== '-' && entryCheck !== '') {
                     validSignal = { id: doc.id, ...d };
-                    break; // التوقف عند أول إشارة صالحة (أحدث إشارة)
+                    break;
                 }
             }
 
@@ -2010,7 +2015,8 @@ async function startSignalListener(){
             const d = validSignal;
             const id = d.id;
             
-            if(u.status==='active'){
+            // ✅ التحقق من نوع الباقة
+            if(u.status==='active' && (u.planType==='gold' || u.planType==='both')){
                 const a=document.getElementById('activeSignalBox');
                 const l=document.getElementById('lockedSignalBox');
                 if(a)a.classList.remove('hidden');
@@ -2019,7 +2025,6 @@ async function startSignalListener(){
                 const ss=document.getElementById('sigSL');
                 const st=document.getElementById('sigTP');
                 
-                // التعديل الرابع: قراءة جميع الأسماء البديلة
                 const entryVal = d.entry || d.entryPrice || d.price || '-';
                 const slVal = d.stopLoss || d.sl || '-';
                 const tpVal = d.takeProfit || d.tp || '-';
@@ -2070,7 +2075,8 @@ async function initUserNotif(){
     try{
         const m=await import("https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js");
         const{doc,onSnapshot}=m;
-        onSnapshot(doc(window.firebaseDB,'users',u.uid),d=>{
+        // ✅ تم تغيير users إلى tradelix_users
+        onSnapshot(doc(window.firebaseDB,'tradelix_users',u.uid),d=>{
             if(!d.exists())return;
             const data=d.data();
             if(lastUserStatus&&lastUserStatus!==data.status){
@@ -2177,7 +2183,8 @@ async function checkMissedSignals(){
     if(!window.firebaseDB) { setTimeout(checkMissedSignals, 1000); return; }
     
     const u = JSON.parse(localStorage.getItem('tradix_user')||'{}');
-    if(u.status !== 'active') return;
+    // ✅ التحقق من نوع الباقة
+    if(u.status !== 'active' || (u.planType !== 'gold' && u.planType !== 'both')) return;
     
     try {
         const m = await import("https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js");
@@ -2185,7 +2192,8 @@ async function checkMissedSignals(){
         
         let lastCheck = parseInt(localStorage.getItem('lastSignalCheck')||'0');
         if(lastCheck===0){lastCheck=Date.now();localStorage.setItem('lastSignalCheck',lastCheck.toString());}
-        const r = collection(window.firebaseDB, 'signals');
+        // ✅ تم تغيير signals إلى gold_signals
+        const r = collection(window.firebaseDB, 'gold_signals');
         const q = query(r, orderBy('createdAt','desc'), limit(20));
         const snap = await getDocs(q);
         
@@ -2199,7 +2207,6 @@ async function checkMissedSignals(){
                 if(isForMe){
                     const notifId = 'sig-' + doc.id;
                     if(!userNotifs.find(n => n.id === notifId)){
-                        // التعديل الخامس: استخدام الأسماء البديلة في الإشعارات
                         const entryVal = d.entry || d.entryPrice || d.price || '-';
                         const slVal = d.stopLoss || d.sl || '-';
                         const tpVal = d.takeProfit || d.tp || '-';
